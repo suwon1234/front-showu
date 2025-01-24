@@ -86,20 +86,25 @@ const TeamUpdate = ({ handleFileChange, handleFileChange2, fileName, fileName2, 
             const formData = new FormData();
 
 
-            //포트폴리오 파일 추가
-            const fileInput = document.getElementById('file');
+            // 포트폴리오 파일 추가
+            const fileInput = document.getElementById("file");
             const selectedFile = fileInput.files[0];
-            if(selectedFile){
-              formData.append("file", selectedFile)
+            if (selectedFile) {
+              formData.append("file", selectedFile);
+            } else if (teamDatas.file) {
+              // 파일이 선택되지 않았으면 기존 파일 유지
+              formData.append("file", teamDatas.file);
             }
 
             // 프로필 이미지 파일 추가
-            const fileInput2 = document.getElementById('teamProfile')
+            const fileInput2 = document.getElementById("teamProfile");
             const selectedFile2 = fileInput2.files[0];
-            if(selectedFile2){
-              formData.append("teamProfile", selectedFile2)
+            if (selectedFile2) {
+              formData.append("teamProfile", selectedFile2);
+            } else if (teamDatas.teamProfile) {
+              formData.append("teamProfile", teamDatas.teamProfile);
             }
-
+            
             formData.append("teamName", data.teamName);
             formData.append("category", data.category);
             formData.append("teamTitle", data.teamTitle);
