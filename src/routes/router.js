@@ -105,6 +105,7 @@ import TeamCreatedContainer from '../pages/showu/team/teamCreate/TeamCreatedCont
 import TeamUpdateContainer from '../pages/mypage/myTeam/teamUpdate/TeamUpdateContainer';
 import MyTeamApplyContainer from '../pages/mypage/myTeam/myTeamApply/MyTeamApplyContainer';
 import TeamManagementContainer from '../pages/mypage/myTeam/teamManagement/TeamManagementContainer';
+import TeamApplyUpdateContainer from '../pages/mypage/myTeam/myTeamApply/update/TeamApplyUpdateContainer';
 
 
 const router = createBrowserRouter([
@@ -416,7 +417,10 @@ const router = createBrowserRouter([
         path: "/showu/team/apply/:id",
         element: <MyTeamApplyContainer />, //team 지원 페이지
       },
-
+      {
+        path: "/showu/team/apply/up-date/:id",
+        element: <TeamApplyUpdateContainer />, //team 지원 페이지
+      },
       {
         path: "/vod",
         element: <VodContainer />,

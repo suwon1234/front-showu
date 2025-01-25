@@ -9,9 +9,6 @@ import { faArrowUp, faCalendarDays, faPen, faThumbtack, faXmark } from '@fortawe
 const MyTeamDetail = ({ page, currentList, setPage, totalPost, PAGINATION, jwtToken, getTeams }) => {
 
   const navigate = useNavigate();
-  const handleNavigate = (path) => {
-    navigate(path)
-  }
 
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import S from "./styleAuditionInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import S from "./auditionInfoStyle";
 
 const AuditionInfo = () => {
   const { id } = useParams(); 
@@ -36,6 +36,10 @@ const AuditionInfo = () => {
     return <div>데이터 로딩중..</div>; 
   }
 
+  console.log("audition", audition)
+
+  console.log(S);
+
   return (
     <S.Wrapper>
       <S.TopTitle>Audition</S.TopTitle>
@@ -50,13 +54,13 @@ const AuditionInfo = () => {
         </S.Titles>
         <S.Line2 />
 
-        <S.imageWrapper>
+        <S.ImageWrapper>
           <img src={audition.imageUrl} alt={audition.title} />
-        </S.imageWrapper>
+        </S.ImageWrapper>
 
-        <S.Description>
+        <div>
           <p>{audition.description}</p>
-        </S.Description>
+        </div>
       </S.SubWrapper>
     </S.Wrapper>
   );

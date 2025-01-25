@@ -1,11 +1,8 @@
-// 오디션 세부 페이지 스타일
+import styled from "styled-components";
 
-import styled  from "styled-components"
-import { backgroundBlack } from "../../../global/common";
+const S = {};
 
-    const S = {};
-
-    S.Wrapper = styled.div`
+  S.Wrapper = styled.div`
         background-color: #444444; 
     `;
 
@@ -59,7 +56,7 @@ import { backgroundBlack } from "../../../global/common";
     `
 
     S.SubWrapper = styled.div`
-        ${backgroundBlack}
+        background-color: #000;
         margin-left: 140px;
         margin-right: 140px;
     `;
