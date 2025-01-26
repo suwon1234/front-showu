@@ -2,14 +2,15 @@ import React from 'react';
 import S from './StyleApply';
 import Paging from '../../_component/Paging';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDays, faPen, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 
 const Apply = ({ PAGINATION, currentList, page, setPage, totalPost, jwtToken, getTeamManagment, navigate }) => {
+  const { currentUser } = useSelector((state) => state.user)
+  console.log("currentUser", currentUser)
 
   const handleTeamDelete = async (applyId) => {
-    const confirmDelete = window.confirm("정말로 팀 매칭을 삭제하시겠습니까?");
+    const confirmDelete = window.confirm("정말로 팀 지원을 삭제하시겠습니까?");
     if (confirmDelete) {
       try {
         const response = await fetch(`http://localhost:8000/shouw/team/apply/remove/${applyId}`, {
@@ -60,8 +61,9 @@ const Apply = ({ PAGINATION, currentList, page, setPage, totalPost, jwtToken, ge
 
               <ul>
                 <S.UserInfo>  
-                  <img src={`http://localhost:8000${item.applyId.picture}`} alt="team profile"></img>
+                  <img src={currentUser.picture || 'http://localhost:8000/uploads/profiles/user.png'} alt="team profile"></img>
                   <div>
+                    <li>{item.teamId.teamName}</li>
                     <li className='teamName'>{item.applyId.name}</li>
                     <li className='category'>{item.applyId.role}</li>
                   </div>
@@ -75,7 +77,9 @@ const Apply = ({ PAGINATION, currentList, page, setPage, totalPost, jwtToken, ge
                 </S.category>
 
                 <S.LessonExplantion>
-                  <li className='lessonDetail'>{item.intro}</li>
+                  <div className='intro'>
+                    <li className='lessonDetail'>{item.intro}</li>
+                  </div>
                   <div>
                     <span>{item.career}</span>
                     {/* <p>{calculateDDay(team.deadLine)}</p> */}

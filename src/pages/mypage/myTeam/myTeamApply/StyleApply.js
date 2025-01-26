@@ -148,7 +148,7 @@ const S = {};
       width: 80px;
       height: 80px;
       object-fit: cover;
-      border-radius: 20px;
+      border-radius: 50px;
     }
   `
 
@@ -209,6 +209,11 @@ const S = {};
     margin-top: 20px;
 
     position: relative;
+
+    & .intro {
+      width: 258px;
+      height: 50px;
+    }
 
     & .lessonName {
       color: #797979;
