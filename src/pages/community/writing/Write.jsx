@@ -3,31 +3,24 @@ import S from "./styleWrite";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { useForm } from "react-hook-form";
 
 const Write = () => {
   const navigate = useNavigate();
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
+  const jwtToken = localStorage.getItem("jwtToken");
+  const [filesPath, setFilesPath] = useState(null);
+  const [fileName, setFileName] = useState('');
+
+  const { register, handleSubmit, getValues, setValue,
+    formState : { isSubmitting, errors }
+  } = useForm({ mode : "onSubmit" });
   
+  // console.log("form error", errors)
 
-  const handleInputChange = () => {
-    const title = document.getElementById("name").value.trim();
-    const category = document.querySelector("select").value;
-    setIsButtonActive(title && category !== "choose");
-  };
-
-  const handleFile = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
-      alert("파일 크기는 5MB 이하로 업로드해주세요.");
-      e.target.value = "";
-    } else {
-      setFile(selectedFile); 
-    }
-  };
  
-
   const handleBack = () => {
     const userCheck = window.confirm(
       "커뮤니티 홈 화면으로 이동합니다. 이동하시겠습니까?"
@@ -37,80 +30,20 @@ const Write = () => {
     }
   };
 
-
-const handleSubmit = async () => {
-  const token = localStorage.getItem("jwtToken");
-
-  if (!token) {
-    alert("로그인이 필요합니다.");
-    navigate("/login");
-    return;
-  }
-
-  const complete = window.confirm("작성을 완료하시겠습니까?");
-  if (!complete) return;
-
-  const title = document.getElementById("name").value.trim();
-  const category = document.querySelector("select").value;
-  const content = document.getElementById("content").value.trim();
-
-  if (!title || category === "choose" || !content) {
-    alert("모든 필드를 입력해주세요.");
-    return;
-  }
-
-  try {
-    let imageUrl = "";
-
-    // 파일 업로드
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const fileResponse = await fetch("http://localhost:8000/community/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (fileResponse.ok) {
-        const { url } = await fileResponse.json();
-        imageUrl = `http://localhost:8000${url}`;
-        setImageUrl(imageUrl); 
-      } else {
-        throw new Error("파일 업로드 실패");
-      }
-    }
-
-    // 글 작성
-    const postData = { title, category, content, imageUrl };
-    const response = await fetch("http://localhost:8000/community/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(postData),
-    });
-
-    if (response.ok) {
-      alert("작성이 완료되었습니다.");
-      navigate("/community"); 
-    } else {
-      const errorData = await response.json();
-      alert(errorData.message || "글 작성 중 오류가 발생했습니다.");
-    }
-  } catch (error) {
-    console.error("오류:", error);
-    alert("서버 오류가 발생했습니다.");
-  }
-};
-
-
-
   const handleEdit = () => {
     const complete = window.confirm("수정/삭제 페이지로 이동하시겠습니까?");
     if (complete) {
       navigate("/community/write/history/edit");
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    console.log("selectedFile", selectedFile)
+    if (selectedFile) {
+      setFileName(selectedFile.name); // 선택된 파일 이름을 상태에 저장
+    } else {
+      setFileName(''); // 파일이 선택되지 않은 경우 상태 초기화
     }
   };
 
@@ -130,74 +63,131 @@ const handleSubmit = async () => {
         </S.Titles>
 
         <S.box>글쓰기</S.box>
-        <S.border>
-          <S.Input>
-            <div>
-              <label>제목</label>
-              <input type="text" id="name" placeholder="제목을 입력하세요" onChange={handleInputChange} />
-            </div>
-            <div>
-              <label>카테고리</label>
-              <S.ReasonSelect>
-                <select onChange={handleInputChange}>
-                  <option value="choose">카테고리를 선택하세요</option>
-                  <option value="전체">전체</option>
-                  <option value="공연">공연</option>
-                  <option value="뮤지컬">뮤지컬</option>
-                  <option value="영화">영화</option>
-                  <option value="연극">연극</option>
-                  <option value="밴드">밴드</option>
-                </select>
-              </S.ReasonSelect>
-            </div>
-            <div>
-              <label>내용</label>
-              <textarea
-                className="textArea"
-                type="text"
-                id="content"
-                placeholder="내용을 입력하세요"
-              />
-            </div>
+        <form onSubmit={handleSubmit(async (data) => {
+          console.log("form 제출");
+          console.log("data", data);
+          const formData = new FormData();
 
-            <div>
-              <label>첨부 파일</label>
-              <S.FileInput
-                id="file"
-                type="file"
-                placeholder="찾아보기"
-                onChange={handleFile}
-                accept="image/*"
-              />
-              <p>첨부 파일은 최대 5MB까지 등록할 수 있습니다.</p>
-            </div>
 
-            {/* 업로드된 이미지 미리보기 */}
-            {imageUrl && (
+          // 파일 추가
+          const fileInput = document.getElementById('file');
+          const selectedFile = fileInput.files[0];
+          if (selectedFile) {
+            formData.append("file", selectedFile); 
+          }
+
+          formData.append("title", data.title);
+          formData.append("content", data.content);
+          formData.append("category", data.category);
+
+          await fetch(`http://localhost:8000/community/write/create`, {
+            method : "POST",
+            headers : {
+              'Authorization': `Bearer ${jwtToken}`
+            },
+            body : formData
+          })
+          .then((res) => res.json())
+          .then((res) => {
+            if(!res.createSuccess){
+              alert(res.message)
+              navigate('/community')
+              return;
+            }
+            const newFilesPath = `http://localhost:8000${res.filePath}`;
+            setFilesPath(newFilesPath);
+            alert(res.message);
+            navigate('/community')
+            console.log("커뮤니티 글 작성 완료");
+          })
+          .catch((error) => {
+            console.error("글 작성 중 오류 발생", error);
+            alert("글 작성 중 오류가 발생했습니다.");
+          })
+
+        })}>
+          <S.border>
+            <S.Input>
               <div>
-                <p>업로드된 이미지 미리보기:</p>
-                <img
-                  src={imageUrl}
-                  alt="Uploaded Preview"
-                  style={{ maxWidth: "200px", maxHeight: "200px", marginTop: "10px" }}
+                <label>제목</label>
+                <input type="text" id="title" name="title" placeholder="제목을 입력하세요" 
+                  {...register("title", { required : true })}
                 />
               </div>
-            )}
+
+              <div>
+                <label>카테고리</label>
+                <S.ReasonSelect>
+                  <select 
+                    {...register("category", { 
+                      required: true,
+                      validate: (value) => value !== "choose" || "카테고리를 선택하세요",
+                    })}>
+                    <option value="choose">카테고리를 선택하세요</option>
+                    <option value="전체">전체</option>
+                    <option value="공연">공연</option>
+                    <option value="뮤지컬">뮤지컬</option>
+                    <option value="영화">영화</option>
+                    <option value="연극">연극</option>
+                    <option value="밴드">밴드</option>
+                  </select>
+                </S.ReasonSelect>
+              </div>
+
+              <div>
+                <label>내용</label>
+                <textarea
+                  className="textArea"
+                  id="content"
+                  name="content"
+                  placeholder="내용을 입력하세요"
+                  {...register("content", { required : true })}
+                />
+              </div>
+
+              <div>
+                <label>첨부 파일</label>
+                <S.FileInput
+                  id="file"
+                  type="file"
+                  name="file"
+                  placeholder="찾아보기"
+                  {...register("file")}
+                  onChange={(e) => {
+                    handleFileChange(e)
+                  }}
+                />
+                <p>첨부 파일은 최대 5MB까지 등록할 수 있습니다.</p>
+              </div>
+
+              {/* 업로드된 이미지 미리보기 */}
+              {imageUrl && (
+                <div>
+                  <p>업로드된 이미지 미리보기:</p>
+                  <img
+                    src={imageUrl}
+                    alt="Uploaded Preview"
+                    style={{ maxWidth: "200px", maxHeight: "200px", marginTop: "10px" }}
+                  />
+                </div>
+              )}
 
 
-          </S.Input>
+            </S.Input>
 
-          <S.buttonWrapper>
-            <button onClick={handleBack}>이전 화면으로</button>
-            <button
-              disabled={!isButtonActive}
-              onClick={handleSubmit}
-              className={isButtonActive ? "activeButton" : "inactiveButton"}
-            >
-              작성하기
-            </button>
-          </S.buttonWrapper>
-        </S.border>
+            <S.buttonWrapper>
+              <button onClick={handleBack}>이전 화면으로</button>
+              <button
+                // disabled={!isButtonActive || isSubmitting}
+                disabled={isSubmitting}
+                className={isButtonActive ? "activeButton" : "inactiveButton"}
+              >
+                작성하기
+              </button>
+            </S.buttonWrapper>
+          </S.border>
+        </form>
+
       </S.SubWrapper>
     </S.Wrapper>
   );

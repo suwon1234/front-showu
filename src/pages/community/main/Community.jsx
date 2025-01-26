@@ -99,7 +99,7 @@ const Community = () => {
             <S.Img key={item._id}>
               
               <Link to={`/community/communityInfo/${item._id}`}>
-                <img src={item.imageUrl || item.file} alt={item.title} />
+                <img src={`http://localhost:8000/${item.imageUrl}`} alt={item.title} />
               </Link>
               <div>
                 <h3>{item.title}</h3>

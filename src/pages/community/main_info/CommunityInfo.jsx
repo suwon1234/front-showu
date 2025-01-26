@@ -188,7 +188,7 @@ const CommunityInfo = () => {
         <S.Line1 />
 
         <S.Img>
-          <img src={data.imageUrl} alt={data.title} />
+          <img src={`http://localhost:8000/${data.imageUrl}`} alt={data.title} />
           <p>{data.description}</p>
           <p>{data.content}</p>
         </S.Img>

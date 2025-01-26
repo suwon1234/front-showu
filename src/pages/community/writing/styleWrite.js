@@ -33,7 +33,7 @@ const S = {};
         margin-right: 140px;
 `;
 
-S.IconWrapper = styled.div`
+    S.IconWrapper = styled.div`
         display: flex;
         justify-content: center;
         align-items: center;
@@ -74,29 +74,29 @@ S.IconWrapper = styled.div`
     `
 
     S.ButtonsAll = styled.div` // 상단 버튼들
-    display: flex;
-    
-    padding: 10px 20px;
-
-    div { // 버튼 간격
         display: flex;
-        gap: 8px; 
-    }
+        
+        padding: 10px 20px;
 
-    button { // 버튼 스타일
-        border-radius: 50px;
-        padding: 10px 15px;
-        margin-left: 5px;
-        margin-right: 5px;
-        background-color: black;
-        color: ${({ theme }) => theme.PALLETE.white};
-        border: 1px solid #ffd400;
-        cursor: pointer;
-
-        &:hover { // 버튼 호버
-            background-color: #ffd400;
-            color: #000;
+        div { // 버튼 간격
+            display: flex;
+            gap: 8px; 
         }
+
+        button { // 버튼 스타일
+            border-radius: 50px;
+            padding: 10px 15px;
+            margin-left: 5px;
+            margin-right: 5px;
+            background-color: black;
+            color: ${({ theme }) => theme.PALLETE.white};
+            border: 1px solid #ffd400;
+            cursor: pointer;
+
+            &:hover { // 버튼 호버
+                background-color: #ffd400;
+                color: #000;
+            }
     }`
 
     S.TitleBig = styled.h1`
