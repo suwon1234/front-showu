@@ -7,13 +7,12 @@ import { useSelector } from 'react-redux';
 
 const Apply = ({ PAGINATION, currentList, page, setPage, totalPost, jwtToken, getTeamManagment, navigate }) => {
   const { currentUser } = useSelector((state) => state.user)
-  console.log("currentUser", currentUser)
 
   const handleTeamDelete = async (applyId) => {
     const confirmDelete = window.confirm("정말로 팀 지원을 삭제하시겠습니까?");
     if (confirmDelete) {
       try {
-        const response = await fetch(`http://localhost:8000/shouw/team/apply/remove/${applyId}`, {
+        const response = await fetch(`http://localhost:8000/showu/team/apply/remove/${applyId}`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${jwtToken}`,
@@ -25,7 +24,7 @@ const Apply = ({ PAGINATION, currentList, page, setPage, totalPost, jwtToken, ge
         if (data.success) {
           alert("팀 지원이 성공적으로 삭제되었습니다.");
           await getTeamManagment();
-          navigate("/my-team"); 
+          navigate("/my-team/apply"); 
         } else {
           alert(data.message || "팀 지원 삭제에 실패했습니다.");
         }
@@ -35,6 +34,8 @@ const Apply = ({ PAGINATION, currentList, page, setPage, totalPost, jwtToken, ge
       }
     }
   }
+  
+  console.log("currentList", currentList)
 
   return (
     <>
@@ -46,13 +47,13 @@ const Apply = ({ PAGINATION, currentList, page, setPage, totalPost, jwtToken, ge
 
               <S.UpdateAndDeleteButton >
                 <div 
-                  className='deleteButton'
+                  className='updateButton'
                   onClick={() => navigate(`/showu/team/apply/up-date/${item._id}`)}
                 >
                   <FontAwesomeIcon icon={faPen} className='pen' />
                 </div>
                 <div 
-                  className='updateButton'
+                  className='deleteButton'
                   onClick={() => handleTeamDelete(item._id)}
                 >
                   <FontAwesomeIcon icon={faXmark} className='xmark' />
