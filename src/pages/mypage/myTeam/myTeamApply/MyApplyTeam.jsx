@@ -22,7 +22,7 @@ const MyApplyTeam = () => {
   const getTeamManagment = async () => {
 
     try {
-      await fetch(`http://localhost:8000/my/showu/managment`, {
+      await fetch(`http://localhost:8000/showu/team/apply/`, {
         method : "GET",
         headers : {
           Authorization: `Bearer ${jwtToken}`
@@ -34,8 +34,8 @@ const MyApplyTeam = () => {
             console.log(res.message)
           }
           console.log(res.message)
-          setManagment(res.managmentList)
-          console.log(res.managmentList)
+          setManagment(res.apply)
+          console.log(res.apply)
         })
     } catch (error) {
       console.error("팀원 관리 내역 불러오는 중 오류 발생", error)
