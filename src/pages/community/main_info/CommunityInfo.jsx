@@ -5,10 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import S from "./commuInfoStyle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown, faEdit, faTrashAlt, faSave, faHeart, faHeartBroken } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
+import UpdateAndDeleteButton from "./_component/UpdateAndDeleteButton";
 
 const CommunityInfo = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+  console.log("currentUser", currentUser)
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,6 +46,8 @@ const CommunityInfo = () => {
   
     fetchCommunityInfo();
   }, [id]);
+
+  console.log("data", data)
   
 
   // 댓글 등록
@@ -184,7 +190,17 @@ const CommunityInfo = () => {
       </S.IconWrapper>
 
       <S.SubWrapper>
-        <S.TopTitle>{data.title}</S.TopTitle>
+        <S.TopTitle>
+          <div>{data.title}</div>
+          
+          {/* 글쓴 유저일 경우에만 수정, 삭제 버튼 보이게함 */}
+          <UpdateAndDeleteButton 
+            currentUser={currentUser}
+            data={data}
+            S={S}
+          />
+
+        </S.TopTitle>
         <S.Line1 />
 
         <S.Img>

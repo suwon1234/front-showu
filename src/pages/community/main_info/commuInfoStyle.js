@@ -65,8 +65,11 @@ textarea {
   S.TopTitle = styled.h1`
     font-size: 20px;
     display: flex;
+    align-items: center;
     margin-left: 20px;
+    margin-right: 20px;
     margin-top: 50px;
+    justify-content: space-between;
     
   `;
 

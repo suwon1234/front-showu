@@ -106,6 +106,7 @@ import TeamUpdateContainer from '../pages/mypage/myTeam/teamUpdate/TeamUpdateCon
 import MyTeamApplyContainer from '../pages/mypage/myTeam/myTeamApply/MyTeamApplyContainer';
 import TeamManagementContainer from '../pages/mypage/myTeam/teamManagement/TeamManagementContainer';
 import TeamApplyUpdateContainer from '../pages/mypage/myTeam/myTeamApply/update/TeamApplyUpdateContainer';
+import WriteUpdateContainer from '../pages/community/writingEdit/WriteUpdateContainer';
 
 
 const router = createBrowserRouter([
@@ -152,6 +153,10 @@ const router = createBrowserRouter([
       {
         path: "/community/write",
         element: <WriteContainer />, // 커뮤니티 글쓰기 페이지
+      },
+      {
+        path: "/community/write/update/:id",
+        element: <WriteUpdateContainer />, // 커뮤니티 글쓰기 수정 페이지
       },
       {
         path: "/community/writing/history",
