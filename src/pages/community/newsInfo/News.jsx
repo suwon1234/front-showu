@@ -9,13 +9,20 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 const News = () => {
   const { id } = useParams();
   const [news, setNews] = useState(null);
+  const jwtToken = localStorage.getItem("jwtToken");
 
   useEffect(() => {
     const fetchNewsById = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/community/newsMain/${id}`);
+        const response = await fetch(`http://localhost:8000/community/newsMain/${id}`, {
+          method : "GET",
+          headers : {
+            "Authorization": `Bearer ${jwtToken}`
+          }
+        });
+        
         const data = await response.json();
-        setNews(data);
+        setNews(data.news);
       } catch (error) {
         console.error("뉴스 상세 데이터 오류 발생:", error);
       }
@@ -23,6 +30,8 @@ const News = () => {
 
     fetchNewsById();
   }, [id]);
+
+  console.log("news", news)
 
   if (!news) {
     return <S.Error>로딩 중입니다...</S.Error>;
