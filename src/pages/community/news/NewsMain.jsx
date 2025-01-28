@@ -87,7 +87,7 @@ const NewsMain = () => {
                 <Link to={`/community/newsMain/news/${news._id}`}>
               <S.ImageWrapper>
                 {/* <Link to={`/community/news/${news.id}`}> */}
-                  <img src={news.imageUrl} alt={news.title} />
+                  <img src={`http://localhost:8000/${news.imageUrl}`} alt={news.title} />
               </S.ImageWrapper>
                 </Link>
               <S.NewsContent>

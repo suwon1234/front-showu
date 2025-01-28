@@ -56,11 +56,11 @@ const Write = () => {
       </S.IconWrapper>
 
       <S.SubWrapper>
-        <S.Titles>
+        {/* <S.Titles>
           <S.ButtonsAll>
             <button onClick={handleEdit}>수정/삭제하기</button>
           </S.ButtonsAll>
-        </S.Titles>
+        </S.Titles> */}
 
         <S.box>글쓰기</S.box>
         <form onSubmit={handleSubmit(async (data) => {

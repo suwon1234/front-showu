@@ -57,7 +57,7 @@ const News = () => {
       <S.Title>{news.title}</S.Title>
       <S.Line2></S.Line2>  
       <S.Images>
-      <img src={news.imageUrl} alt={news.title} />
+      <img src={`http://localhost:8000/${news.imageUrl}`} alt={news.title} />
       </S.Images>
 
       <S.content>{news.content}</S.content> 

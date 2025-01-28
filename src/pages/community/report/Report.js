@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import S from './styleReport';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useForm } from 'react-hook-form';
 // import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 // import { faCircleCheck as solidCircleCheck } from '@fortawesome/free-solid-svg-icons';
 // import { faCircleCheck as regularCircle } from '@fortawesome/free-regular-svg-icons';
@@ -18,16 +19,14 @@ const Report = () => {
   
   const navigate = useNavigate();
   const [isChecked, setIsChecked] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const jwtToken = localStorage.getItem("jwtToken");
+  const [filesPath, setFilesPath] = useState(null);
+  const [fileName, setFileName] = useState('');
 
-
-
-  const handleSubmit = () => {
-    const userCheck = window.confirm("제보하시겠습니까?");
-      if (userCheck) {
-        alert("제보가 완료되었습니다. News 홈 화면으로 이동합니다.")
-        navigate('/community/newsMain');
-      }
-  };
+  const { register, handleSubmit, getValues, setValue,
+    formState : { isSubmitting, errors }
+  } = useForm({ mode : "onSubmit" });
 
   const CheckIcon = () => {
     setIsChecked((check) => !check);
@@ -37,6 +36,16 @@ const Report = () => {
     const userCheck =window.confirm("News 홈 화면으로 이동합니다. 이동하시겠습니까?");
     if (userCheck) {
       navigate('/community/newsMain');
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    console.log("selectedFile", selectedFile)
+    if (selectedFile) {
+      setFileName(selectedFile.name); // 선택된 파일 이름을 상태에 저장
+    } else {
+      setFileName(''); // 파일이 선택되지 않은 경우 상태 초기화
     }
   };
 
@@ -75,32 +84,115 @@ const Report = () => {
           </div>
         </S.TitleContainer>
 
-        <S.Input>
-          <div>
-            <label>이름</label>
-            <input type="text" id="name" placeholder="이름을 입력하세요" />
-          </div>
-          <div>
-            <label>이메일</label>
-            <input type="email" id="email" placeholder="이메일을 입력하세요" />
-          </div>
-          <div>
-            <label>제목</label>
-            <input type="text" id="title" placeholder="제목을 입력하세요" />
-          </div>
-          <div>
-            <label>내용</label>
-            <textarea className='textArea' type="text" id="content" placeholder="내용을 입력하세요" />
-          </div>
+        <form onSubmit={handleSubmit(async (data) => {
+          console.log("form 제출")
+          console.log("data", data)
+          const formData = new FormData();
 
-          <div>
-          <label>첨부 파일</label>
-            <S.FileInput  type='file' placeholder='찾아보기' onChange={handleFile}></S.FileInput>
-            <p>첨부 파일은 최대 5M까지 등록할 수 있습니다.</p>
-          </div>
-        </S.Input>
+          // 파일 추가
+          const fileInput = document.getElementById('file');
+          const selectedFile = fileInput.files[0];
+          if (selectedFile) {
+            formData.append("file", selectedFile); 
+          }
 
-        <S.section>
+          formData.append("name", data.name);
+          formData.append("email", data.email);
+          formData.append("title", data.title);
+          formData.append("content", data.content);
+
+          await fetch(`http://localhost:8000/community/newsMain/create`, {
+            method : "POST",
+            headers : {
+              'Authorization': `Bearer ${jwtToken}`
+            },
+            body : formData
+          })
+          .then((res) => res.json())
+          .then((res) => {
+            if(!res.createSuccess){
+              alert(res.message)
+              navigate('/community/newsMain')
+              return;
+            }
+            const newFilesPath = `http://localhost:8000${res.filePath}`;
+            setFilesPath(newFilesPath);
+            alert(res.message);
+            navigate('/community/newsMain')
+            console.log("커뮤니티 글 작성 완료");
+          })
+          .catch((error) => {
+            console.error("글 작성 중 오류 발생", error);
+            alert("글 작성 중 오류가 발생했습니다.");
+          })
+
+        })}>
+          <S.Input>
+            <div>
+              <label>이름</label>
+              <input 
+                type="text" 
+                id="name" 
+                placeholder="이름을 입력하세요"
+                {...register("name", { required : true })} 
+                />
+            </div>
+            <div>
+              <label>이메일</label>
+              <input 
+                type="email" 
+                id="email" 
+                placeholder="이메일을 입력하세요" 
+                {...register("email", { required : true })} 
+                />
+            </div>
+            <div>
+              <label>제목</label>
+              <input 
+                type="text" 
+                id="title" 
+                placeholder="제목을 입력하세요" 
+                {...register("title", { required : true })} 
+                />
+            </div>
+            <div>
+              <label>내용</label>
+              <textarea 
+                className='textArea' 
+                type="text" 
+                id="content" 
+                placeholder="내용을 입력하세요" 
+                {...register("content", { required : true })} 
+              />
+            </div>
+            <div>
+            <label>첨부 파일</label>
+              <S.FileInput  
+                type='file'
+                id='file'
+                name='file'
+                {...register("file")}
+                onChange={(e) => {
+                  handleFileChange(e)
+                }} 
+              ></S.FileInput>
+              <p>첨부 파일은 최대 5M까지 등록할 수 있습니다.</p>
+            </div>
+          </S.Input>
+
+          <S.buttonWrapper>
+            {/* <NavLink to="/community/newsMain"> */}
+            <button onClick={handleBack}>이전 화면으로</button>
+            {/* </NavLink>  */}
+            <button 
+              disabled={isSubmitting}
+            >
+              참여하기
+            </button> 
+          </S.buttonWrapper>
+        </form>
+
+        {/* <S.section>
           <div>
             <p>개인정보 수집 및 이용 동의 안내</p>  
           </div>     
@@ -120,13 +212,13 @@ const Report = () => {
             <p>개인정보의 보유 및 이용 기간</p>
             <p>이용 목적 달성 후 즉시 파기하나, 보유할 필요가 있는 경우에 한하여 3년간 보유 및 이용</p>
           </div>     
-        </S.section>
+        </S.section> */}
 
-          <S.CheckWrapper>
+          {/* <S.CheckWrapper>
             <S.CheckIcon onClick={CheckIcon}>
-              {/* <FontAwesomeIcon className='checkedIcon' icon={faCircleCheck}  /> */}
+              <FontAwesomeIcon className='checkedIcon' icon={faCircleCheck}  />
                 <FontAwesomeIcon className="checkedIcon"
-                // icon={isChecked ? solidCircleCheck : faCircleCheck}
+                icon={isChecked ? solidCircleCheck : faCircleCheck}
                 />
 
             <S.CheckboxWrapper>
@@ -136,14 +228,9 @@ const Report = () => {
               </S.Checkbox>
             </S.CheckboxWrapper>
             </S.CheckIcon>
-          </S.CheckWrapper>
+          </S.CheckWrapper> */}
 
-        <S.buttonWrapper>
-        {/* <NavLink to="/community/newsMain"> */}
-          <button onClick={handleBack}>이전 화면으로</button>
-        {/* </NavLink>  */}
-          <button onClick={handleSubmit}>참여하기</button>
-        </S.buttonWrapper>
+        
         </S.border>
       </S.SubWrapper>
     </S.Wrapper>
