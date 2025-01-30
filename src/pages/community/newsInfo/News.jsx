@@ -5,11 +5,14 @@ import { useParams } from "react-router-dom";
 import S from "./newsStyle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import NewEditDeleteButton from "../reportEdit/NewEditDeleteButton";
+import { useSelector } from "react-redux";
 
 const News = () => {
   const { id } = useParams();
   const [news, setNews] = useState(null);
   const jwtToken = localStorage.getItem("jwtToken");
+  const { currentUser } = useSelector((state) => state.user)
 
   useEffect(() => {
     const fetchNewsById = async () => {
@@ -55,6 +58,13 @@ const News = () => {
       <S.section>   
 
       <S.Title>{news.title}</S.Title>
+
+      <NewEditDeleteButton 
+        currentUser={currentUser}
+        S={S}
+        news={news}
+      />
+
       <S.Line2></S.Line2>  
       <S.Images>
       <img src={`http://localhost:8000/${news.imageUrl}`} alt={news.title} />

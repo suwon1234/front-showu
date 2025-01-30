@@ -107,6 +107,7 @@ import MyTeamApplyContainer from '../pages/mypage/myTeam/myTeamApply/MyTeamApply
 import TeamManagementContainer from '../pages/mypage/myTeam/teamManagement/TeamManagementContainer';
 import TeamApplyUpdateContainer from '../pages/mypage/myTeam/myTeamApply/update/TeamApplyUpdateContainer';
 import WriteUpdateContainer from '../pages/community/writingEdit/WriteUpdateContainer';
+import ReportEditContainer from '../pages/community/reportEdit/ReportEditContainer';
 
 
 const router = createBrowserRouter([
@@ -185,6 +186,10 @@ const router = createBrowserRouter([
       {
         path: "/community/report",
         element: <ReportContainer />, // 제보하기 페이지
+      },
+      {
+        path: "/community/report/edit/:id",
+        element: <ReportEditContainer />, // 제보하기 수정 페이지
       },
       {
         path: "/community/reports",
