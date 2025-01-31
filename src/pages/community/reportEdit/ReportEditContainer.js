@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import S from './style';
+import { useSelector } from 'react-redux';
 
 const ReportEditContainer = () => {
   
@@ -12,15 +13,50 @@ const ReportEditContainer = () => {
   const [filesPath, setFilesPath] = useState(null);
   const [fileName, setFileName] = useState('');
   const { id } = useParams();
+  const { currentUser } = useSelector((state) => state.user) 
   console.log("id", id)
-
+  
   const { register, handleSubmit, getValues, setValue,
     formState : { isSubmitting, errors }
   } = useForm({ mode : "onSubmit" });
 
-  const CheckIcon = () => {
-    setIsChecked((check) => !check);
-  };
+  const [updateNews, setUpdateNews] = useState({
+    title : '',
+    content : '',
+    name : '',
+    email : ''
+  })
+
+  
+  useEffect(() => {
+    const getNewsById = async () => {
+      try {
+        await fetch(`http://localhost:8000/community/newsMain/${id}`, {
+          method : "GET",
+        })
+        .then((res) => res.json())
+        .then((res) => {
+          if(!res.ok){
+            console.log(res.message)
+          }
+          console.log(res.message)
+          setUpdateNews(res.news)
+
+          setValue("title", res.news?.title || "");
+          setValue("content", res.news?.content || "");
+          setValue("name", res.news?.postId.UserId.name || "");
+          setValue("email", res.news?.postId.UserId.email || "");
+          
+        })
+      } catch (error) {
+        console.error("제보하기 데이터 가져오는 중 에러 발생", error)
+      }
+    }
+
+    getNewsById();
+
+  }, [id, setValue])
+
 
   const handleBack = () => {
     const userCheck =window.confirm("News 홈 화면으로 이동합니다. 이동하시겠습니까?");
@@ -38,6 +74,8 @@ const ReportEditContainer = () => {
       setFileName(''); // 파일이 선택되지 않은 경우 상태 초기화
     }
   };
+
+  console.log("updateNews", updateNews)
 
   return (   
     <S.Wrapper>
@@ -123,7 +161,7 @@ const ReportEditContainer = () => {
               <input 
                 type="text" 
                 id="name" 
-                placeholder="이름을 입력하세요"
+                placeholder={currentUser.name || "이름을 입력하세요"}
                 {...register("name", { required : true })} 
                 />
             </div>
@@ -132,7 +170,7 @@ const ReportEditContainer = () => {
               <input 
                 type="email" 
                 id="email" 
-                placeholder="이메일을 입력하세요" 
+                placeholder={currentUser.email || "이메일을 입력하세요"}
                 {...register("email", { required : true })} 
                 />
             </div>
@@ -141,7 +179,7 @@ const ReportEditContainer = () => {
               <input 
                 type="text" 
                 id="title" 
-                placeholder="제목을 입력하세요" 
+                placeholder={"제목을 입력하세요"} 
                 {...register("title", { required : true })} 
                 />
             </div>
@@ -150,8 +188,8 @@ const ReportEditContainer = () => {
               <textarea 
                 className='textArea' 
                 type="text" 
-                id="content" 
-                placeholder="내용을 입력하세요" 
+                id="content"
+                placeholder={"내용을 입력하세요"} 
                 {...register("content", { required : true })} 
               />
             </div>

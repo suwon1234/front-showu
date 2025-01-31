@@ -5,11 +5,11 @@ const NewEditDeleteButton = ({ currentUser, news, S }) => {
   const navigate = useNavigate();
   const jwtToken = localStorage.getItem("jwtToken");
 
-  const handleTeamDelete = async (id) => {
+  const handleNewDelete = async (id) => {
     const confirmDelete = window.confirm("정말로 글을 삭제하시겠습니까?");
     if (confirmDelete) {
       try {
-        const response = await fetch(`http://localhost:8000/community/write/remove/${id}`, {
+        const response = await fetch(`http://localhost:8000/community/newsMain/remove/${id}`, {
           method: "DELETE",
           headers: {
             "Authorization": `Bearer ${jwtToken}`,
@@ -19,11 +19,11 @@ const NewEditDeleteButton = ({ currentUser, news, S }) => {
         const data = await response.json();
 
         if (data.success) {
-          alert("커뮤니티 글이 성공적으로 삭제되었습니다.");
-          navigate(`/community`); 
+          alert("제보한 글이 성공적으로 삭제되었습니다.");
+          navigate(`/community/newsMain`); 
         } else {
           alert(data.message || "글 삭제에 실패했습니다.");
-          navigate(`/community`); 
+          navigate(`/community/newsMain`); 
         }
       } catch (error) {
         console.error("글 삭제 중 오류 발생:", error);
@@ -37,13 +37,13 @@ const NewEditDeleteButton = ({ currentUser, news, S }) => {
 
   return (
     <div>
-      { currentUser._id === news.postId.UserId && (
+      { currentUser._id === news.postId.UserId._id && (
             <div>
               <S.Buttons>
                 <S.Button onClick={() => navigate(`/community/report/edit/${news.postId._id}`)}>
                   수정
                 </S.Button>
-                <S.Button onClick={() => handleTeamDelete(news._id)}>
+                <S.Button onClick={() => handleNewDelete(news._id)}>
                   삭제
                 </S.Button>
               </S.Buttons>
