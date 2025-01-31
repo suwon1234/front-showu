@@ -108,6 +108,7 @@ import TeamManagementContainer from '../pages/mypage/myTeam/teamManagement/TeamM
 import TeamApplyUpdateContainer from '../pages/mypage/myTeam/myTeamApply/update/TeamApplyUpdateContainer';
 import WriteUpdateContainer from '../pages/community/writingEdit/WriteUpdateContainer';
 import ReportEditContainer from '../pages/community/reportEdit/ReportEditContainer';
+import AdminTeamContainer from '../pages/admin/AdminTeamContainer';
 
 
 const router = createBrowserRouter([
@@ -126,6 +127,10 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: <AdminUpgradContainer />, //관리자 페이지 등급업 관리
+      },
+      {
+        path: "/admin/team",
+        element: <AdminTeamContainer />, //관리자 페이지 팀 개설 관리
       },
       {
         path: "/community",
