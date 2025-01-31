@@ -7,6 +7,7 @@ import UpgradeList from '../upgrade/UpgradeList';
 import Paging from '../../mypage/_component/Paging';
 import S from './style';
 import TeamList from './TeamList';
+import TeamDetailModal from './TeamDetailModal';
 
 const PAGINATION = {
   pageRange: 10,
@@ -15,7 +16,7 @@ const PAGINATION = {
 
 const TeamAdminComponent = () => {
   const [adminList, setAdminList] = useState([]);
-  const [selectedUpgrade, setSelectedUpgrade] = useState(null);
+  const [selectedTeam, setSelectedTeam] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const jwtToken = localStorage.getItem('jwtToken');
@@ -36,7 +37,7 @@ const TeamAdminComponent = () => {
  // 등급업 신청 내역 불러오기
   const getAdmin = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/admin/upgrade/all-data`, {
+      const response = await fetch(`http://localhost:8000/admin/team/all-data`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${jwtToken}`,
@@ -47,7 +48,7 @@ const TeamAdminComponent = () => {
         throw new Error(`Error status: ${response.message}`);
       }
       const datas = await response.json();
-      setAdminList(datas.upgrades);  // adminList 업데이트
+      setAdminList(datas.Teams); 
     } catch (error) {
       console.error('GetAdminError', error);
     }
@@ -62,20 +63,21 @@ const TeamAdminComponent = () => {
 
   const closeModal = () => {
     setShowModal(false); 
-    setSelectedUpgrade(null);  // 모달 닫히면서 selectedUpgrade를 초기화
+    setSelectedTeam(null); 
   };
 
   // 승인/거절 버튼 클릭 시 유저 상태 변경
-  const handleUserRoleChange = async (upgradeId, status) => {
+  const handleUserRoleChange = async (teamId, status) => {
     const data = {
-      userId: upgradeId,
-      upgradeRequestStatus: status,
-      isUpgradeRequested: status === '승인',
-      role: status === '승인' ? "export" : "user"
+      teamId: teamId,
+      status : "매칭 완료",
+      // upgradeRequestStatus: status,
+      // isUpgradeRequested: status === '승인',
+      // role: status === '승인' ? "export" : "user"
     };
   
     try {
-      const response = await fetch(`http://localhost:8000/admin/upgrade/request-status/${status === '승인' ? 'export' : 'reject'}`, {
+      const response = await fetch(`http://localhost:8000/admin/team/request-status/${status === '승인' ? 'complete' : 'reject'}`, {
         method: "PUT",
         headers: {
           'Content-Type': 'application/json'
@@ -90,8 +92,8 @@ const TeamAdminComponent = () => {
   
         // 상태 변경된 유저만 업데이트
         setAdminList(prevAdminList => prevAdminList.map((item) =>
-        item._id === upgradeId
-          ? { ...item, exportName: { ...item.exportName, upgradeRequestStatus: status } }
+        item._id === teamId
+          ? { ...item, status : status }
           : item
       ));
 
@@ -106,11 +108,11 @@ const TeamAdminComponent = () => {
   };
   
 
-  const handleRowClick = async (upgradeId, e) => {
+  const handleRowClick = async (teamId, e) => {
     // 버튼 클릭이 아닌 경우에만 모달을 열도록 처리
     if (e.target.tagName !== 'BUTTON') {
       try {
-        const response = await fetch(`http://localhost:8000/admin/upgrade/${upgradeId}`, {
+        const response = await fetch(`http://localhost:8000/admin/team/${teamId}`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -118,7 +120,7 @@ const TeamAdminComponent = () => {
           },
         });
         const data = await response.json();
-        setSelectedUpgrade(data); // 모달을 열 때 선택된 데이터를 저장
+        setSelectedTeam(data); 
         setShowModal(true); 
       } catch (error) {
         console.error('에러 발생:', error);
@@ -150,9 +152,9 @@ const TeamAdminComponent = () => {
       />
 
       {/* 모달창 */}
-      <UpgradeDetailModal
+      <TeamDetailModal 
         showModal={showModal}
-        selectedUpgrade={selectedUpgrade}
+        selectedTeam={selectedTeam}
         closeModal={closeModal}
       />
     </div>

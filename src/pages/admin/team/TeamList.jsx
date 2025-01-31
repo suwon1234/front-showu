@@ -2,6 +2,8 @@ import React from 'react';
 import S from './style';
 
 const TeamList = ({ currentList, handleRowClick, handleUserRoleChange }) => {
+  console.log("currentList", currentList)
+
   return (
     <div>
       <S.Container>
@@ -22,18 +24,18 @@ const TeamList = ({ currentList, handleRowClick, handleUserRoleChange }) => {
                 key={item._id} 
                 onClick={(e) => handleRowClick(item._id, e)}  // 행 클릭 시 모달 열기
               >
-                <th scope="row" className="num">{item.exportName.name}</th>
-                <td>{item.field}</td>
-                <td>{item.career}</td>
-                <td>{item.exportName.role}</td>
-                <td>{item.exportName.upgradeRequestStatus}</td>
+                <th scope="row" className="num">{item.teamName}</th>
+                <td>{item.activityPeriodStart}</td>
+                <td>{item.teamLeader.role}</td>
+                <td>{item.category}</td>
+                <td>{item.status}</td>
                 <td>
                   <S.RoleChangeButtonWrapper>
                     <button 
                       className='exportButton'
                       onClick={(e) => {
                         e.stopPropagation(); // 클릭 이벤트가 부모 요소로 전달되지 않도록 함
-                        handleUserRoleChange(item.exportName._id, '승인');
+                        handleUserRoleChange(item._id, '승인');
                       }}
                     >
                       승인
@@ -42,7 +44,7 @@ const TeamList = ({ currentList, handleRowClick, handleUserRoleChange }) => {
                       className='rejectButton'
                       onClick={(e) => {
                         e.stopPropagation(); 
-                        handleUserRoleChange(item.exportName._id, '거절');
+                        handleUserRoleChange(item._id, '거절');
                       }}
                     >
                       거절
