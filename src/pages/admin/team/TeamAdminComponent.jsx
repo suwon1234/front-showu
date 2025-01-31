@@ -71,9 +71,6 @@ const TeamAdminComponent = () => {
     const data = {
       teamId: teamId,
       status : "매칭 완료",
-      // upgradeRequestStatus: status,
-      // isUpgradeRequested: status === '승인',
-      // role: status === '승인' ? "export" : "user"
     };
   
     try {
