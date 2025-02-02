@@ -1,39 +1,30 @@
-import React, { useState } from "react";
-import S from "./styleWrite";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from 'react';
+import S from './style';
+import { useForm } from 'react-hook-form';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const Write = () => {
+const WriteUpdateContainer = () => {
   const navigate = useNavigate();
-  const [isButtonActive, setIsButtonActive] = useState(false);
-  const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
   const jwtToken = localStorage.getItem("jwtToken");
   const [filesPath, setFilesPath] = useState(null);
   const [fileName, setFileName] = useState('');
+  const [isButtonActive, setIsButtonActive] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [updateUser, setUpdateUser] = useState([]);
+  const { id } = useParams();
 
   const { register, handleSubmit, getValues, setValue,
     formState : { isSubmitting, errors }
   } = useForm({ mode : "onSubmit" });
-  
-  // console.log("form error", errors)
 
- 
   const handleBack = () => {
     const userCheck = window.confirm(
       "커뮤니티 홈 화면으로 이동합니다. 이동하시겠습니까?"
     );
     if (userCheck) {
       navigate("/community");
-    }
-  };
-
-  const handleEdit = () => {
-    const complete = window.confirm("수정/삭제 페이지로 이동하시겠습니까?");
-    if (complete) {
-      navigate("/community/write/history/edit");
     }
   };
 
@@ -47,8 +38,38 @@ const Write = () => {
     }
   };
 
+  useEffect(() => {
+    const getCommuPost = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/community/write/update/detail/${id}`, {
+          method : "GET",
+          headers : {
+            'Authorization': `Bearer ${jwtToken}`
+          }
+        })
+        .then((res) => res.json())
+        .then((res) => {
+          if(!res.ok){
+            console.log(res.message)
+          }
+          setUpdateUser(res.commuPost)
+          console.log(res.message)
+        })
+      } catch (error) {
+        console.error("작성한 글 데이터 불러오는 중 에러 발생", error)
+      }
+    }
+
+    getCommuPost();
+
+  }, [jwtToken, id])
+
+  // console.log("updateUser", updateUser)
+  // console.log("updateUser", updateUser.map((item) => item.title))
+
   return (
-    <S.Wrapper>
+    <div>
+      <S.Wrapper>
       <S.TopTitle>커뮤니티</S.TopTitle>
 
       <S.IconWrapper>
@@ -62,7 +83,7 @@ const Write = () => {
           </S.ButtonsAll>
         </S.Titles> */}
 
-        <S.box>글쓰기</S.box>
+        <S.box>글 수정하기</S.box>
         <form onSubmit={handleSubmit(async (data) => {
           console.log("form 제출");
           console.log("data", data);
@@ -74,14 +95,17 @@ const Write = () => {
           const selectedFile = fileInput.files[0];
           if (selectedFile) {
             formData.append("file", selectedFile); 
+          } else {
+            alert("파일을 선택해주세요.");
+            return;
           }
 
           formData.append("title", data.title);
           formData.append("content", data.content);
           formData.append("category", data.category);
 
-          await fetch(`http://localhost:8000/community/write/create`, {
-            method : "POST",
+          await fetch(`http://localhost:8000/community/write/update/${id}`, {
+            method : "PUT",
             headers : {
               'Authorization': `Bearer ${jwtToken}`
             },
@@ -91,26 +115,31 @@ const Write = () => {
           .then((res) => {
             if(!res.createSuccess){
               alert(res.message)
-              navigate('/community')
+              navigate(`/community/communityInfo/${id}`)
               return;
             }
             const newFilesPath = `http://localhost:8000${res.filePath}`;
             setFilesPath(newFilesPath);
             alert(res.message);
-            navigate('/community')
-            console.log("커뮤니티 글 작성 완료");
+            navigate(`/community/communityInfo/${id}`)
+            console.log("커뮤니티 글 수정 완료");
           })
           .catch((error) => {
-            console.error("글 작성 중 오류 발생", error);
-            alert("글 작성 중 오류가 발생했습니다.");
+            console.error("글 수정 중 오류 발생", error);
+            alert("글 수정 중 오류가 발생했습니다.");
           })
 
         })}>
           <S.border>
-            <S.Input>
+            { updateUser && updateUser.map((item, i) => (
+              <S.Input key={i}>
               <div>
                 <label>제목</label>
-                <input type="text" id="title" name="title" placeholder="제목을 입력하세요" 
+                <input 
+                  type="text" 
+                  id="title" 
+                  name="title" 
+                  placeholder={ item.title || "제목을 입력하세요"} 
                   {...register("title", { required : true })}
                 />
               </div>
@@ -123,7 +152,7 @@ const Write = () => {
                       required: true,
                       validate: (value) => value !== "choose" || "카테고리를 선택하세요",
                     })}>
-                    <option value="choose">카테고리를 선택하세요</option>
+                    <option value="choose">{item.category}</option>
                     <option value="전체">전체</option>
                     <option value="공연">공연</option>
                     <option value="뮤지컬">뮤지컬</option>
@@ -140,7 +169,7 @@ const Write = () => {
                   className="textArea"
                   id="content"
                   name="content"
-                  placeholder="내용을 입력하세요"
+                  placeholder={ item.content || "내용을 입력하세요"}
                   {...register("content", { required : true })}
                 />
               </div>
@@ -151,7 +180,6 @@ const Write = () => {
                   id="file"
                   type="file"
                   name="file"
-                  placeholder="찾아보기"
                   {...register("file")}
                   onChange={(e) => {
                     handleFileChange(e)
@@ -174,6 +202,8 @@ const Write = () => {
 
 
             </S.Input>
+            ))
+            }
 
             <S.buttonWrapper>
               <button onClick={handleBack}>이전 화면으로</button>
@@ -182,7 +212,7 @@ const Write = () => {
                 disabled={isSubmitting}
                 className={isButtonActive ? "activeButton" : "inactiveButton"}
               >
-                작성하기
+                수정하기
               </button>
             </S.buttonWrapper>
           </S.border>
@@ -190,11 +220,8 @@ const Write = () => {
 
       </S.SubWrapper>
     </S.Wrapper>
+    </div>
   );
 };
 
-export default Write;
-
-
-
-
+export default WriteUpdateContainer;

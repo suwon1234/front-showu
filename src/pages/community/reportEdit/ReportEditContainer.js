@@ -1,21 +1,10 @@
-// 제보하기 페이지  /community/report
-
-import React, { useState } from 'react';
-import S from './styleReport';
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-// import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-// import { faCircleCheck as solidCircleCheck } from '@fortawesome/free-solid-svg-icons';
-// import { faCircleCheck as regularCircle } from '@fortawesome/free-regular-svg-icons';
+import S from './style';
+import { useSelector } from 'react-redux';
 
-const handleFile = () => {
-    alert("파일 크기는 5MB 이하로 업로드해주세요.");
-};
-
-
-
-const Report = () => {
+const ReportEditContainer = () => {
   
   const navigate = useNavigate();
   const [isChecked, setIsChecked] = useState(false);
@@ -23,14 +12,51 @@ const Report = () => {
   const jwtToken = localStorage.getItem("jwtToken");
   const [filesPath, setFilesPath] = useState(null);
   const [fileName, setFileName] = useState('');
-
+  const { id } = useParams();
+  const { currentUser } = useSelector((state) => state.user) 
+  console.log("id", id)
+  
   const { register, handleSubmit, getValues, setValue,
     formState : { isSubmitting, errors }
   } = useForm({ mode : "onSubmit" });
 
-  const CheckIcon = () => {
-    setIsChecked((check) => !check);
-  };
+  const [updateNews, setUpdateNews] = useState({
+    title : '',
+    content : '',
+    name : '',
+    email : ''
+  })
+
+  
+  useEffect(() => {
+    const getNewsById = async () => {
+      try {
+        await fetch(`http://localhost:8000/community/newsMain/${id}`, {
+          method : "GET",
+        })
+        .then((res) => res.json())
+        .then((res) => {
+          if(!res.ok){
+            console.log(res.message)
+          }
+          console.log(res.message)
+          setUpdateNews(res.news)
+
+          setValue("title", res.news?.title || "");
+          setValue("content", res.news?.content || "");
+          setValue("name", res.news?.postId.UserId.name || "");
+          setValue("email", res.news?.postId.UserId.email || "");
+          
+        })
+      } catch (error) {
+        console.error("제보하기 데이터 가져오는 중 에러 발생", error)
+      }
+    }
+
+    getNewsById();
+
+  }, [id, setValue])
+
 
   const handleBack = () => {
     const userCheck =window.confirm("News 홈 화면으로 이동합니다. 이동하시겠습니까?");
@@ -49,6 +75,8 @@ const Report = () => {
     }
   };
 
+  console.log("updateNews", updateNews)
+
   return (   
     <S.Wrapper>
       <S.TopTitle>News</S.TopTitle>
@@ -57,7 +85,7 @@ const Report = () => {
         <S.MainTitle>News</S.MainTitle>
         <S.SubTitle>가장 먼저 접하는 showU 소식</S.SubTitle>
       </S.Titles>  
-      <S.box>제보하기</S.box>
+      <S.box>제보 수정하기</S.box>
         <S.border>    
         <S.TitleContainer>
           <div className='textDiv'>
@@ -101,8 +129,8 @@ const Report = () => {
           formData.append("title", data.title);
           formData.append("content", data.content);
 
-          await fetch(`http://localhost:8000/community/newsMain/create`, {
-            method : "POST",
+          await fetch(`http://localhost:8000/community/newsMain/edit/${id}`, {
+            method : "PUT",
             headers : {
               'Authorization': `Bearer ${jwtToken}`
             },
@@ -112,18 +140,18 @@ const Report = () => {
           .then((res) => {
             if(!res.createSuccess){
               alert(res.message)
-              navigate('/community/newsMain')
+              navigate(`/community/newsMain/news/${id}`)
               return;
             }
             const newFilesPath = `http://localhost:8000${res.filePath}`;
             setFilesPath(newFilesPath);
             alert(res.message);
-            navigate('/community/newsMain')
-            console.log("커뮤니티 글 작성 완료");
+            navigate(`/community/newsMain/news/${id}`)
+            console.log("커뮤니티 글 수정 완료");
           })
           .catch((error) => {
-            console.error("글 작성 중 오류 발생", error);
-            alert("글 작성 중 오류가 발생했습니다.");
+            console.error("글 수정 중 오류 발생", error);
+            alert("글 수정 중 오류가 발생했습니다.");
           })
 
         })}>
@@ -133,7 +161,7 @@ const Report = () => {
               <input 
                 type="text" 
                 id="name" 
-                placeholder="이름을 입력하세요"
+                placeholder={currentUser.name || "이름을 입력하세요"}
                 {...register("name", { required : true })} 
                 />
             </div>
@@ -142,7 +170,7 @@ const Report = () => {
               <input 
                 type="email" 
                 id="email" 
-                placeholder="이메일을 입력하세요" 
+                placeholder={currentUser.email || "이메일을 입력하세요"}
                 {...register("email", { required : true })} 
                 />
             </div>
@@ -151,7 +179,7 @@ const Report = () => {
               <input 
                 type="text" 
                 id="title" 
-                placeholder="제목을 입력하세요" 
+                placeholder={"제목을 입력하세요"} 
                 {...register("title", { required : true })} 
                 />
             </div>
@@ -160,8 +188,8 @@ const Report = () => {
               <textarea 
                 className='textArea' 
                 type="text" 
-                id="content" 
-                placeholder="내용을 입력하세요" 
+                id="content"
+                placeholder={"내용을 입력하세요"} 
                 {...register("content", { required : true })} 
               />
             </div>
@@ -187,7 +215,7 @@ const Report = () => {
             <button 
               disabled={isSubmitting}
             >
-              참여하기
+              수정하기
             </button> 
           </S.buttonWrapper>
         </form>
@@ -237,5 +265,4 @@ const Report = () => {
   );
 };
 
-export default Report;
-
+export default ReportEditContainer;

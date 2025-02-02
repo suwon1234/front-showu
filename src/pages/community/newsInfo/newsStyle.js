@@ -161,4 +161,28 @@ button {
       }
   }
 `
+
+    S.Button = styled.button`
+        background-color: ${(props) =>
+        props.liked ? "#ffd400" : ({ theme }) => theme.PALLETE.gray["300"]};
+        color: ${(props) => (props.liked ? "black" : "white")};
+        border: none;
+        border-radius: 50px;
+        padding: 12px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+
+        &:hover {
+            background-color: ${(props) =>
+            props.liked ? "#e6c700" : "#d6d6d6"}; 
+            color: ${(props) => (props.liked ? "black" : "white")};
+        }
+    `;
+
+    S.Buttons = styled.div`
+        display: flex;
+        gap: 4px;
+    `;
 export default S;

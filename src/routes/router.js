@@ -105,6 +105,10 @@ import TeamCreatedContainer from '../pages/showu/team/teamCreate/TeamCreatedCont
 import TeamUpdateContainer from '../pages/mypage/myTeam/teamUpdate/TeamUpdateContainer';
 import MyTeamApplyContainer from '../pages/mypage/myTeam/myTeamApply/MyTeamApplyContainer';
 import TeamManagementContainer from '../pages/mypage/myTeam/teamManagement/TeamManagementContainer';
+import TeamApplyUpdateContainer from '../pages/mypage/myTeam/myTeamApply/update/TeamApplyUpdateContainer';
+import WriteUpdateContainer from '../pages/community/writingEdit/WriteUpdateContainer';
+import ReportEditContainer from '../pages/community/reportEdit/ReportEditContainer';
+import AdminTeamContainer from '../pages/admin/AdminTeamContainer';
 
 
 const router = createBrowserRouter([
@@ -123,6 +127,10 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: <AdminUpgradContainer />, //관리자 페이지 등급업 관리
+      },
+      {
+        path: "/admin/team",
+        element: <AdminTeamContainer />, //관리자 페이지 팀 개설 관리
       },
       {
         path: "/community",
@@ -153,6 +161,10 @@ const router = createBrowserRouter([
         element: <WriteContainer />, // 커뮤니티 글쓰기 페이지
       },
       {
+        path: "/community/write/update/:id",
+        element: <WriteUpdateContainer />, // 커뮤니티 글쓰기 수정 페이지
+      },
+      {
         path: "/community/writing/history",
         element: <HistoryContainer />, // 커뮤니티 글쓰기 내역 페이지
       },
@@ -179,6 +191,10 @@ const router = createBrowserRouter([
       {
         path: "/community/report",
         element: <ReportContainer />, // 제보하기 페이지
+      },
+      {
+        path: "/community/report/edit/:id",
+        element: <ReportEditContainer />, // 제보하기 수정 페이지
       },
       {
         path: "/community/reports",
@@ -416,7 +432,10 @@ const router = createBrowserRouter([
         path: "/showu/team/apply/:id",
         element: <MyTeamApplyContainer />, //team 지원 페이지
       },
-
+      {
+        path: "/showu/team/apply/up-date/:id",
+        element: <TeamApplyUpdateContainer />, //team 지원 페이지
+      },
       {
         path: "/vod",
         element: <VodContainer />,

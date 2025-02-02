@@ -5,17 +5,27 @@ import { useParams } from "react-router-dom";
 import S from "./newsStyle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import NewEditDeleteButton from "../reportEdit/NewEditDeleteButton";
+import { useSelector } from "react-redux";
 
 const News = () => {
   const { id } = useParams();
   const [news, setNews] = useState(null);
+  const jwtToken = localStorage.getItem("jwtToken");
+  const { currentUser } = useSelector((state) => state.user)
 
   useEffect(() => {
     const fetchNewsById = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/community/newsMain/${id}`);
+        const response = await fetch(`http://localhost:8000/community/newsMain/${id}`, {
+          method : "GET",
+          headers : {
+            "Authorization": `Bearer ${jwtToken}`
+          }
+        });
+        
         const data = await response.json();
-        setNews(data);
+        setNews(data.news);
       } catch (error) {
         console.error("뉴스 상세 데이터 오류 발생:", error);
       }
@@ -23,6 +33,8 @@ const News = () => {
 
     fetchNewsById();
   }, [id]);
+
+  console.log("news", news)
 
   if (!news) {
     return <S.Error>로딩 중입니다...</S.Error>;
@@ -46,9 +58,16 @@ const News = () => {
       <S.section>   
 
       <S.Title>{news.title}</S.Title>
+
+      <NewEditDeleteButton 
+        currentUser={currentUser}
+        S={S}
+        news={news}
+      />
+
       <S.Line2></S.Line2>  
       <S.Images>
-      <img src={news.imageUrl} alt={news.title} />
+      <img src={`http://localhost:8000/${news.imageUrl}`} alt={news.title} />
       </S.Images>
 
       <S.content>{news.content}</S.content> 

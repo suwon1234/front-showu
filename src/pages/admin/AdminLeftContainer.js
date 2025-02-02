@@ -18,14 +18,8 @@ const AdminLeftContainer = () => {
             <hr />
         </S.Ul>
         <S.Ul>
-            <Link to={"#"}>
-              <li>제보 관리</li>
-            </Link>
-            <hr />
-        </S.Ul>
-        <S.Ul>
-            <Link to={"#"}>
-              <li>showU 관리</li>
+            <Link to={"/admin/team"}>
+              <li>팀 매칭 관리</li>
             </Link>
             {/* <hr /> */}
         </S.Ul>

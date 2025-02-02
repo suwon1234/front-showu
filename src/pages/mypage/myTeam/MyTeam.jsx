@@ -35,29 +35,31 @@ const MyTeam = () => {
     navigate(`/my-team?page=${page}&stateValue=${stateValue}`, { replace: true });
   }, [page, stateValue, navigate]);
 
-  useEffect(() => {
-    const getTeams = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/my/showu/matching`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        });
-        const data = await response.json();
-        if (data.teamMatchingSuccess) {
-          setCompletedTeams(data.completedTeams);
-          setWaitingTeams(data.waitingTeams);
-        } else {
-          console.log(data.message);
-        }
-      } catch (error) {
-        console.error("MyTeamDetailError", error);
+  const getTeams = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/my/showu/matching`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
+      const data = await response.json();
+      if (data.teamMatchingSuccess) {
+        setCompletedTeams(data.completedTeams);
+        setWaitingTeams(data.waitingTeams);
+      } else {
+        console.log(data.message);
       }
-    };
+    } catch (error) {
+      console.error("MyTeamDetailError", error);
+    }
+  };
 
-    getTeams();
-  }, [jwtToken, page]);
+  useEffect(() => {
+    if(jwtToken){
+      getTeams();
+    }
+  }, [jwtToken]);
 
   return (
     <S.Container className="container">
@@ -87,6 +89,8 @@ const MyTeam = () => {
           totalPost={totalPost}
           PAGINATION={PAGINATION}
           stateValue={stateValue}
+          jwtToken={jwtToken}
+          getTeams={getTeams}
         />
       </S.Wapper>
     </S.Container>

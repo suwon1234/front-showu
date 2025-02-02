@@ -1,9 +1,5 @@
-// 커뮤니티 글쓰기 페이지 스타일
-
 import styled  from "styled-components";
 import { backgroundBlack } from "../../../global/common";
-
-
 
 const S = {};
 
@@ -33,23 +29,6 @@ const S = {};
         margin-right: 140px;
 `;
 
-    S.IconWrapper = styled.div`
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 5px;
-        height: 100%;
-        padding-bottom: 50px;
-
-        .icon{
-            font-size: 20px;
-
-        path {
-            color : #ffd400;
-        }
-    }
-    `
-
     S.border = styled.div`
         border: 1px solid ${({ theme }) => theme.PALLETE.gray["600"]};
         max-width: 900px;
@@ -63,41 +42,39 @@ const S = {};
         color: #ffd400;
         justify-content: center;
         display: flex;
-        padding-top: 30px;
+        padding: 30px;
     `
 
     S.Titles = styled.div` // 페이지 메인 타이틀 All
         display: flex;
         margin: 20px;
-        justify-content: space-between;
     
     `
 
-    S.ButtonsAll = styled.div` // 상단 버튼들
+    S.MainTitle = styled.div` // 페이지 메인 타이틀
+        font-size: ${({ theme }) => theme.FONT_SIZE.h3};
+        font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+        margin-top: 10px;    
+    `
+
+    S.SubTitle = styled.div` // 페이지 서브 타이틀
+        font-size: ${({ theme }) => theme.FONT_SIZE.h7};
+        margin-top: 23px;
+    margin-left: 8px;
+    `
+
+
+    S.TitleContainer = styled.div`
         display: flex;
-        
-        padding: 10px 20px;
+        justify-content: center;
+        text-align: center ; 
+        margin-bottom: 40px;
 
-        div { // 버튼 간격
-            display: flex;
-            gap: 8px; 
+        .textDiv {
+            text-align: left;
+            max-width: 800px;
         }
-
-        button { // 버튼 스타일
-            border-radius: 50px;
-            padding: 10px 15px;
-            margin-left: 5px;
-            margin-right: 5px;
-            background-color: black;
-            color: ${({ theme }) => theme.PALLETE.white};
-            border: 1px solid #ffd400;
-            cursor: pointer;
-
-            &:hover { // 버튼 호버
-                background-color: #ffd400;
-                color: #000;
-            }
-    }`
+    `;
 
     S.TitleBig = styled.h1`
         font-size: ${({ theme }) => theme.FONT_SIZE.h4};
@@ -124,17 +101,16 @@ const S = {};
         
 
         label {
-            font-size: 16px;
+            font-size: ${({ theme }) => theme.FONT_SIZE.h7};
             margin-bottom: 5px;
         }
 
         input {
-            width: 553px;
             padding: 10px;
-            font-size: 16px;
+            font-size: ${({ theme }) => theme.FONT_SIZE.h7};
             border: 1px solid #ffd400;
             border-radius: 4px;
-            color: #fff;
+            color: #ffd400;
             background-color: #000;
             
         }
@@ -149,7 +125,6 @@ const S = {};
             width: 100%; 
             height: 450px; 
             border: 1px solid #ffd400;
-            border-radius: 5px;
             padding: 10px;
             font-size: 16px;
             color: #fff;
@@ -158,19 +133,14 @@ const S = {};
         }
     `;
 
-    S.ReasonSelect = styled.div`
-    select {
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-        background-color: #000;
-        color: #fff;
-        border: 1px solid #ffd400;
-        border-radius: 4px;
-    }
+    S.section = styled.div`
+        display: flex;
+        flex-direction: column;
+        div {
+            margin-bottom: 10px;
+            text-align: left;
+        }
     `;
-
-
 
     S.FileInput = styled.input`
         &:hover {
@@ -179,10 +149,34 @@ const S = {};
     }
     `
 
+    S.CheckIcon = styled.div`
+        cursor: 'pointer';
+        display: 'flex'; 
+        align-Items: 'center';
+        gap: 10px;
+            .icon {
+                margin-Right: '10px';
+            }
+    `
+
+    S.CheckWrapper = styled.div`
+        border: 1px solid ${({ theme }) => theme.PALLETE.gray["600"]};
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        gap: 10px;
+
+            p {
+            margin: 0;
+            }
+    `
+
     S.buttonWrapper = styled.div`
         display: flex;
         justify-content: center;
         gap: 10px;
+        padding-top: 20px;
 
         button {          
             padding: 10px;
@@ -201,5 +195,59 @@ const S = {};
     }`
 
 
+    S.CheckboxWrapper = styled.div`
+        display: flex;
+        align-items: center;
 
- export default S;
+        & span {
+        margin-left: 5px;
+        }
+    `
+
+    S.Checkbox = styled.div`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        & input[type="checkbox"] {
+          /* 기본 체크박스 숨기기 */
+            appearance: none; 
+            -webkit-appearance: none; 
+            width: 20px;
+            height: 20px;
+            border: 2px solid gray;
+            border-radius: 50%;
+            background-color: transparent;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            position: relative;
+        }
+
+        /* 체크 상태 스타일 */
+        & input[type="checkbox"]:checked {
+              background-color: #444444;
+              border-color: #444444;
+        } 
+
+        /* 체크 표시 아이콘 추가 */
+        & input[type="checkbox"]:checked::before {
+            content: ''; 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 4px;
+            border: solid white;
+            border-width: 0 0 2px 2px;
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        label{
+            margin-left: 5px;
+        }
+        `
+
+    
+
+export default S;

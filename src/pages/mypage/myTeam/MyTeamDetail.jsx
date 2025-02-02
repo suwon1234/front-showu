@@ -1,17 +1,14 @@
 import React from 'react';
 import S from './MyTeamDetailStyle';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Paging from '../_component/Paging';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp, faCalendarDays, faPen, faThumbtack, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
-const MyTeamDetail = ({ page, currentList, setPage, totalPost, PAGINATION }) => {
+const MyTeamDetail = ({ page, currentList, setPage, totalPost, PAGINATION, jwtToken, getTeams }) => {
 
   const navigate = useNavigate();
-  const handleNavigate = (path) => {
-    navigate(path)
-  }
 
   const handleScrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -30,6 +27,33 @@ const MyTeamDetail = ({ page, currentList, setPage, totalPost, PAGINATION }) => 
       return "D-Day"
     } else {
       return "마감된 공고"
+    }
+  }
+
+  const handleTeamDelete = async (teamId) => {
+    const confirmDelete = window.confirm("정말로 팀 매칭을 삭제하시겠습니까?");
+    if (confirmDelete) {
+      try {
+        const response = await fetch(`http://localhost:8000/showu/team/remove/${teamId}`, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `Bearer ${jwtToken}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert("팀 매칭이 성공적으로 삭제되었습니다.");
+          await getTeams();
+          navigate("/my-team"); 
+        } else {
+          alert(data.message || "팀 매칭 삭제에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("팀 매칭 삭제 중 오류 발생:", error);
+        alert("오류가 발생했습니다. 다시 시도해주세요.");
+      }
     }
   }
 
@@ -64,7 +88,7 @@ const MyTeamDetail = ({ page, currentList, setPage, totalPost, PAGINATION }) => 
                 </div>
                 <div 
                   className='updateButton'
-                  // onClick={() => navigate("")}
+                  onClick={() => handleTeamDelete(team._id)}
                 >
                   <FontAwesomeIcon icon={faXmark} className='xmark' />
                 </div>
