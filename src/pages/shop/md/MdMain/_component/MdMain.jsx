@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import S from "./styleMain";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faChevronRight, faCircleChevronLeft, faCircleChevronRight, faHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronDown,
+  faChevronRight,
+  faCircleChevronLeft,
+  faCircleChevronRight,
+  faHeart,
+} from "@fortawesome/free-solid-svg-icons";
 
 const MdMain = () => {
   const [mdProducts, setMdProducts] = useState([]);
@@ -13,6 +20,8 @@ const MdMain = () => {
   const [currentCategory, setCurrentCategory] = useState("전체");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [shownProducts, setShownProducts] = useState(15);
+
+  
 
   useEffect(() => {
     const getMdProducts = async () => {
@@ -29,7 +38,6 @@ const MdMain = () => {
         } else {
           setMdProducts(datas);
           setFilteredProducts(datas);
-          // Best 제품은 초기화
           setBestProducts(datas.slice(0, ProductsPerSlide)); // 초기 Best 제품
         }
       } catch (error) {
@@ -40,14 +48,21 @@ const MdMain = () => {
     getMdProducts();
   }, []);
 
-  // Best 슬라이드 
   const handleNext = () => {
     setCurrentSlide((prev) => {
-      const newSlide = prev === Math.ceil(mdProducts.length / ProductsPerSlide) - 1 ? 0 : prev + 1;
-      const nextStartIndex = newSlide * ProductsPerSlide >= mdProducts.length ? 0 : newSlide * ProductsPerSlide;
-      const newBestProducts = mdProducts.slice(nextStartIndex, nextStartIndex + ProductsPerSlide);
+      const newSlide =
+        prev === Math.ceil(mdProducts.length / ProductsPerSlide) - 1
+          ? 0
+          : prev + 1;
+      const nextStartIndex =
+        newSlide * ProductsPerSlide >= mdProducts.length
+          ? 0
+          : newSlide * ProductsPerSlide;
+      const newBestProducts = mdProducts.slice(
+        nextStartIndex,
+        nextStartIndex + ProductsPerSlide
+      );
 
-      // 애니메이션 적용을 위해 상태 업데이트
       setBestProducts(newBestProducts);
       return newSlide;
     });
@@ -55,18 +70,24 @@ const MdMain = () => {
 
   const handlePrev = () => {
     setCurrentSlide((prev) => {
-      const newSlide = prev === 0 ? Math.ceil(mdProducts.length / ProductsPerSlide) - 1 : prev - 1;
-      const prevStartIndex = newSlide * ProductsPerSlide >= mdProducts.length ? 0 : newSlide * ProductsPerSlide;
-      const newBestProducts = mdProducts.slice(prevStartIndex, prevStartIndex + ProductsPerSlide);
+      const newSlide =
+        prev === 0
+          ? Math.ceil(mdProducts.length / ProductsPerSlide) - 1
+          : prev - 1;
+      const prevStartIndex =
+        newSlide * ProductsPerSlide >= mdProducts.length
+          ? 0
+          : newSlide * ProductsPerSlide;
+      const newBestProducts = mdProducts.slice(
+        prevStartIndex,
+        prevStartIndex + ProductsPerSlide
+      );
 
-      // 애니메이션 적용을 위해 상태 업데이트
       setBestProducts(newBestProducts);
       return newSlide;
     });
   };
 
-  
-  // 하트 클릭 (일반MD 상품)
   const handleHeartClickMd = (e, productId) => {
     e.preventDefault();
     e.stopPropagation();
@@ -80,7 +101,6 @@ const MdMain = () => {
     );
   };
 
-  // 하트 클릭 (Best 상품)
   const handleHeartClickBest = (e, productId) => {
     e.preventDefault();
     e.stopPropagation();
@@ -94,7 +114,6 @@ const MdMain = () => {
     );
   };
 
-  // 카테고리 필터
   const handleCategoryChange = (category) => {
     setCurrentCategory(category);
   };
@@ -109,12 +128,16 @@ const MdMain = () => {
     }
   }, [mdProducts, currentCategory]);
 
-  const filteredProductsWithPrice = filteredProducts.filter(product => product.price != null);
+  const filteredProductsWithPrice = filteredProducts.filter(
+    (product) => product.price != null
+  );
 
   const handleShowMore = () => {
     if (shownProducts >= filteredProducts.length) return;
-    setShownProducts((prev) => prev + 15)
-  }
+    setShownProducts((prev) => prev + 15);
+  };
+
+  
 
   return (
     <S.MainWrapper>
@@ -133,10 +156,9 @@ const MdMain = () => {
             <FontAwesomeIcon icon={faCircleChevronLeft} />
           </S.LeftIconWrapper>
 
-          {/* Best 상품 */}
           <S.BestListWrapper offset={-currentSlide * slideWidth}>
             {bestProducts.slice(0, ProductsPerSlide).map((best) => (
-              <S.Best key={best._id} className={best.hidden ? 'hidden' : ''}>
+              <S.Best key={best._id} className={best.hidden ? "hidden" : ""}>
                 <Link to={`/shop/md/detail/${best._id}`}>
                   <div className="image-wrapper">
                     <img src={best.image} alt={best.name} className="image" />
@@ -151,7 +173,8 @@ const MdMain = () => {
                 <div className="best-category">{best.category}</div>
                 <div className="best-name">{best.mdName}</div>
                 <div className="best-price">
-                  {best.price ? best.price.toLocaleString() : "가격 정보 없음"}원
+                  {best.price ? best.price.toLocaleString() : "가격 정보 없음"}
+                  원
                 </div>
               </S.Best>
             ))}
@@ -175,7 +198,6 @@ const MdMain = () => {
         ))}
       </S.CategoryButtonWrapper>
 
-      {/* 일반 MD 상품 */}
       <S.MdWrapper>
         <div className="md-list">
           {filteredProductsWithPrice.slice(0, shownProducts).map((product) => (
@@ -194,7 +216,10 @@ const MdMain = () => {
               <div className="md-category">{product.category}</div>
               <div className="md-name">{product.mdName}</div>
               <div className="md-price">
-                {product.price ? product.price.toLocaleString() : "가격 정보 없음"}원
+                {product.price
+                  ? product.price.toLocaleString()
+                  : "가격 정보 없음"}
+                원
               </div>
             </S.Md>
           ))}

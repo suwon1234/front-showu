@@ -395,10 +395,7 @@ const ShowDetail = () => {
       </S.DateTimeContainer>
 
       <S.ReserveButtonContainer>
-        <S.FavoriteButton
-          onClick={handleFavoriteClick}
-          isFavorite={isFavorite}
-        >
+        <S.FavoriteButton onClick={handleFavoriteClick} isFavorite={isFavorite}>
           ♥
         </S.FavoriteButton>
         <S.ReserveButtonWithHeart
@@ -512,7 +509,71 @@ const ShowDetail = () => {
           </S.TabContent>
         )}
         {activeTab === "기대평" && (
-          <S.TabContent>관람후기와 동일한 댓글 입력 페이지</S.TabContent>
+          <S.TabContent>
+            <S.CommentSection>
+              <S.CommentInputContainer>
+                <S.CommentInput
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="기대평을 입력해주세요!"
+                  maxLength={1000}
+                />
+                <S.CharacterCount>{newComment.length}/1000</S.CharacterCount>
+              </S.CommentInputContainer>
+              <S.CommentButton onClick={handleAddComment}>등록</S.CommentButton>
+            </S.CommentSection>
+            <S.CommentList>
+              {comments.length > 0 ? (
+                comments.map((comment, index) => (
+                  <S.CommentItem key={index}>
+                    {index === editingIndex ? (
+                      <>
+                        <S.EditCommentInput
+                          value={editingComment}
+                          onChange={(e) => setEditingComment(e.target.value)}
+                          maxLength={1000}
+                        />
+                        <S.CharacterCount>
+                          {editingComment.length}/1000
+                        </S.CharacterCount>
+                        <S.CommentButton onClick={handleSaveEdit}>
+                          저장
+                        </S.CommentButton>
+                      </>
+                    ) : (
+                      <>
+                        {comment.text}
+                        <S.CommentDetails>
+                          작성자: {comment.user.name} / {comment.createdAt}
+                        </S.CommentDetails>
+                        <S.EditDeleteContainer>
+                          {comment.user._id === currentUser._id && (
+                            <>
+                              <S.CommentButton
+                                onClick={() => {
+                                  setEditingIndex(index);
+                                  setEditingComment(comment.text);
+                                }}
+                              >
+                                수정
+                              </S.CommentButton>
+                              <S.CommentButton
+                                onClick={() => handleDeleteComment(comment._id)}
+                              >
+                                삭제
+                              </S.CommentButton>
+                            </>
+                          )}
+                        </S.EditDeleteContainer>
+                      </>
+                    )}
+                  </S.CommentItem>
+                ))
+              ) : (
+                <p>기대평이 없습니다</p>
+              )}
+            </S.CommentList>
+          </S.TabContent>
         )}
         {activeTab === "장소정보" && (
           <S.TabContent>카카오 지도 api</S.TabContent>

@@ -158,9 +158,12 @@ S.AllDayButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   margin-top: 10px;
+  font-size: ${({ theme }) => theme.FONT_SIZE.body};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+  transition: 0.3s ease;
+
   &:hover {
-    background-color: #000;
-    color: #ffd400;
+    background-color: #ffaf00;
   }
 `;
 
@@ -181,27 +184,12 @@ S.TimeButtonsContainer = styled.div`
   margin: 0 auto;
 `;
 
-// S.TimeButton = styled.button`
-//   background-color: ${({ selected }) => (selected ? "#ffd400" : "#fff")};
-//   border: 1px solid #ffd400;
-//   color: #000;
-//   padding: 10px;
-//   border-radius: 5px;
-//   cursor: pointer;
-//   width: 100px;
-//   height: 60px; /* 최소 너비 설정 */
-//   text-align: center; /* 텍스트 가운데 정렬 */
-//   margin-bottom: 10px; /* 아래 여백 추가 */
-//   &:hover {
-//     background-color: #ffd400;
-//   }
-// `;
-
 S.TimeButton = styled.button`
   background-color: ${({ selected, isReserved }) =>
-    selected ? "#ffd400" : isReserved ? "red" : "green"};
-  border: 1px solid #ffd400;
-  color: ${({ isReserved }) => (isReserved ? "black" : "white")};
+    isReserved ? "#D3D3D3" : selected ? "#ffd400" : "#fff"};
+  border: 1px solid ${({ isReserved }) => (isReserved ? "#A9A9A9" : "#ffd400")};
+  color: ${({ isReserved }) => (isReserved ? "red" : "black")};
+
   padding: 10px;
   border-radius: 5px;
   cursor: ${({ isReserved }) => (isReserved ? "not-allowed" : "pointer")};
@@ -209,14 +197,12 @@ S.TimeButton = styled.button`
   height: 60px; /* 최소 너비 설정 */
   text-align: center; /* 텍스트 가운데 정렬 */
   margin-bottom: 10px; /* 아래 여백 추가 */
-  opacity: ${({ isReserved }) => (isReserved ? 0.6 : 1)};
   &:hover {
-    background-color: ${({ isReserved }) => (isReserved ? "black" : "white")};
+    background-color: ${({ isReserved, selected }) =>
+      isReserved ? "black" : selected ? "#FFD700" : "#ffd400"};
   }
+  pointer-events: ${({ isReserved }) => (isReserved ? "none" : "auto")};
 `;
-
-
-
 
 S.PriceInfo = styled.div`
   display: flex;
@@ -226,50 +212,60 @@ S.PriceInfo = styled.div`
 `;
 
 S.Img = styled.img`
-  width: 200px;
-  height: 150px;
+  width: 300px;
+  height: 250px;
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-top: 40px;
+  margin-bottom: 20px;
 `;
 
 S.Name = styled.h2`
   font-size: ${({ theme }) => theme.FONT_SIZE.h2};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   color: #000;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
-S.Location = styled.h3`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h3};
+S.Location = styled.h4`
+  font-size: ${({ theme }) => theme.FONT_SIZE.h4};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   color: #000;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
-S.SelectedDates = styled.h3`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h3};
+S.SelectedDates = styled.div`
+/* display: flex; */
+align-items: center;
+text-align: right;
+width: 300px;
+/* height: 300px; */
+  font-size: ${({ theme }) => theme.FONT_SIZE.h5};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   color: #000;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
-S.TotalPrice = styled.h3`
-  font-size: ${({ theme }) => theme.FONT_SIZE.h3};
+S.TotalPrice = styled.h4`
+  font-size: ${({ theme }) => theme.FONT_SIZE.h4};
   font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
   color: #000;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 S.ReserveButton = styled.button`
   background-color: #ffd400;
-  border: none;
+  width: 260px;
   color: #000;
-  padding: 10px;
-  border-radius: 5px;
+  border: none;
+  padding: 15px 30px;
   cursor: pointer;
+  border-radius: 5px;
+  font-size: ${({ theme }) => theme.FONT_SIZE.body};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+  transition: 0.3s ease;
+
   &:hover {
-    background-color: #000;
-    color: #ffd400;
+    background-color: #ffaf00;
   }
 `;
 

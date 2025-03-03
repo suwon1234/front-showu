@@ -1,4 +1,3 @@
-// MD - 결제페이지 스타일
 import styled, { css } from 'styled-components'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -56,29 +55,30 @@ const flexStyle = css`
 
   S.HeadItem = styled.div`
     flex: 1;
-    text-align: center;
+    text-align: left;
     color: #000;
     font-weight: bold;
   `
 
   S.Left = styled.div`
     display: flex;
-    flex: 3;
-    /* text-align: left; */
-    /* padding-left: 50px; */
-  `
+    flex: 2;
+    margin-left: 20px;
+    text-align: center;
+  `;
 
   S.Center = styled.div`
     display: flex;
     flex: 3;
     text-align: center;
-  `
+  `;
 
   S.Right = styled.div`
     display: flex;
     flex: 1;
     text-align: center;
-  `
+  `;
+
 
 
   S.PaymentList = styled.div`
@@ -144,6 +144,17 @@ const flexStyle = css`
     // width: 1165px;
       
     .email-input{
+      width: 500px; 
+      height: 35px; 
+      background-color: #000;
+      border: 0.5px solid #fff;
+      border-radius: 5px; 
+      padding-left: 10px;
+      font-size: 15px;
+      ${inputHover}
+    }
+
+    .email-domain-input{
       width: 500px; 
       height: 35px; 
       background-color: #000;
@@ -234,13 +245,12 @@ const flexStyle = css`
 
   S.OrderInfoWrapper = styled.div`
     display: flex;
-    align-items: flex-end;
     justify-content: space-between;
   `
 
   S.OrderInfo = styled.div`
     ${flexStyle}
-    margin-top: 30px;
+    margin-bottom: 50px;
 
     & p {
       font-size: 20px;
@@ -397,6 +407,7 @@ const flexStyle = css`
     ${buttonStyles}
     background-color: #797979;
     color: #fff;
+    margin-top: 20px;
   `
 
   S.NextButton = styled.button`
@@ -435,4 +446,146 @@ S.CloseButton = styled.button`
   font-size: 16px;
 `;
 
+S.ReserveButton = styled.button`
+  border: none;
+  border-radius: 5px;
+  background-color: #ffd400;
+  color: black;
+  width: 250px;
+  height: 50px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${({ theme }) => theme.FONT_SIZE.h5};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+  margin-top: 20px;
+  margin-left: 30px;
+  cursor: pointer;
+`;
+
+  S.DropdownContainer = styled.div`
+    /* margin-top: 10px; */
+    position: relative;
+    display: inline-block;
+  `;
+
+  S.DropdownButton = styled.button`
+    // 이메일 선택 박스
+    /* min-width: 160px; */
+    width: 520px;
+    height: 35px;
+    border-radius: 5px;
+    background-color: #000;
+    /* padding: 10px 20px; */
+    border: 0.5px solid white;
+    cursor: pointer;
+
+    & p {
+      text-align: left;
+      font-size: 15px;
+      padding-left: 10px;
+    }
+  `;
+
+  S.DropdownContent = styled.div`
+    // 이메일1, 이메일2, ...
+    display: block;
+    position: absolute;
+    background-color: #000;
+    border: 0.5px solid white;
+    /* min-width: 160px; */
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    width: 520px;
+    height: 165px;
+    border-radius: 5px;
+  `;
+
+  S.DropdownItem = styled.div`
+    padding: 5px 16px;
+    color: white;
+    cursor: pointer;
+    font-size: 17px;
+
+    &:hover {
+      background-color: #ffd400;
+      color: #000;
+    }
+  `;
+ S.DropdownContainer = styled.div`
+   margin-top: 10px; ///
+   position: relative;
+   display: inline-block;
+ `;
+
+ S.DropdownButton = styled.button`
+   // 배송메시지 선택 박스
+   /* min-width: 160px; */
+   width: 1165px;
+   height: 35px;
+   border-radius: 5px;
+   background-color: #000;
+   /* padding: 10px 20px; */
+   border: 0.5px solid white;
+   cursor: pointer;
+
+   & p {
+     text-align: left;
+     font-size: 17px;
+     padding-left: 10px;
+   }
+ `;
+
+ S.DropdownContent = styled.div`
+   // 배송메시지1, 배송메시지2, ...
+   display: block;
+   position: absolute;
+   background-color: #000;
+   border: 0.5px solid white;
+   /* min-width: 160px; */
+   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+   z-index: 1;
+   width: 1165px;
+   height: 200px;
+   border-radius: 5px;
+ `;
+
+ S.DropdownItem = styled.div`
+   padding: 5px 16px;
+   color: white;
+   cursor: pointer;
+   font-size: 17px;
+
+   &:hover {
+     background-color: #ffd400;
+     color: #000;
+   }
+ `;
+
+ S.InputMessage = styled.div`
+   & input {
+     width: 1055px;
+     height: 35px;
+     background-color: #000;
+     border: 0.5px solid #fff;
+     border-radius: 5px;
+     padding-left: 10px;
+     font-size: 15px;
+     ${inputHover}
+   }
+ `;
+
+S.InputName = styled.div`
+  & input {
+    width: 1055px;
+    height: 35px;
+    background-color: #000;
+    border: 0.5px solid #fff;
+    border-radius: 5px;
+    padding-left: 10px;
+    font-size: 15px;
+    ${inputHover}
+  }
+`;
   export default S;
