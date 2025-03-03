@@ -7,6 +7,7 @@ import {
   startOfDay,
   differenceInCalendarDays,
   getDay,
+  getHours,
   addMonths,
   isSameDay,
   isBefore,
@@ -73,8 +74,9 @@ const RentalSelection = () => {
     // 선택한 날짜에 대한 예약된 시간대 가져오기
     const reservedTimes = await fetchReservedTimes(date);
     setReservedTimes(reservedTimes); // 예약된 시간대 설정
-    setShowPrices(true); // 시간대를 표시하기 위해 설정
+    setShowPrices(true); // 시간대 표시하기 위해 설정
   };
+
 
   const previousMonth = () => {
     setCurrentMonth(addMonths(currentMonth, -1));
@@ -117,54 +119,81 @@ const RentalSelection = () => {
     }
   };
 
-  const handleReserveClick = async () => {
-    const token = localStorage.getItem("jwtToken");
-    const rentalPeriod = selectedTimes.map((time) => ({
-      date: new Date(
-        setHours(
-          setMinutes(setSeconds(setMilliseconds(new Date(time), 0), 0), 0),
-          time.getHours()
-        )
-      ),
-      timeSlots: [time.getHours()],
-    }));
 
-    const reservationData = {
-      userId: currentUser._id,
-      spaceId: spaceId, // 명시적으로 설정한 spaceId 사용
-      name,
-      location: rentalLocation,
-      rentalPeriod: rentalPeriod,
-      img,
-    };
+ const handleReserveClick = async () => {
+   const token = localStorage.getItem("jwtToken");
 
-    console.log("Reservation Data:", reservationData); // 예약 데이터 확인
+   const rentalPeriod = [];
+   let startDate = new Date(selectedStartDate);
+   let endDate = selectedEndDate ? new Date(selectedEndDate) : startDate;
 
-    try {
-      const response = await fetch(
-        "http://localhost:8000/reservation/reservations",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(reservationData),
-        }
-      );
+   for (let d = startDate; d <= endDate; d = addDays(d, 1)) {
+     const date = startOfDay(d);
+     let timeSlots = selectedTimes
+       .filter((time) => isSameDay(time, d))
+       .map((time) => getHours(time));
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "예약 생성 중 오류 발생");
-      }
+     if (selectedTimes.length === 0) {
+       timeSlots = [];
+       for (let i = 8; i <= 22; i++) {
+         timeSlots.push(i);
+       }
+     }
 
-      alert("예약이 성공적으로 완료되었습니다!");
-      navigate("/mypage");
-    } catch (error) {
-      console.error("예약 생성 중 오류 발생:", error);
-      alert(error.message); // 서버의 오류 메시지를 alert으로 표시
-    }
-  };
+     rentalPeriod.push({
+       date,
+       timeSlots,
+     });
+   }
+
+   if (rentalPeriod.length === 0) {
+     alert("선택한 날짜에 예약 가능한 시간대가 없습니다.");
+     return;
+   }
+
+   const reservationData = {
+     userId: currentUser._id,
+     spaceId,
+     name,
+     location: rentalLocation,
+     rentalPeriod,
+     img,
+     totalPrice,
+     customerName: currentUser.name,
+     customerEmail: currentUser.email,
+   };
+
+   console.log("Reservation Data:", reservationData);
+
+   try {
+     const response = await fetch(
+       "http://localhost:8000/reservation/reservations",
+       {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json",
+           Authorization: `Bearer ${token}`,
+         },
+         body: JSON.stringify(reservationData),
+       }
+     );
+
+     if (!response.ok) {
+       const errorData = await response.json();
+       throw new Error(errorData.message || "예약 생성 중 오류 발생");
+     }
+
+     alert("공간 대여 예약이 완료되었습니다!");
+
+     navigate("/reservation/space-payment", { state: reservationData });
+   } catch (error) {
+     console.error("예약 생성 중 오류 발생:", error);
+     alert(error.message);
+   }
+ };
+
+
+
 
   const fetchReservedTimes = async (date) => {
     const token = localStorage.getItem("jwtToken");
@@ -184,12 +213,14 @@ const RentalSelection = () => {
       }
 
       const reservedTimes = await response.json();
+      console.log("프론트엔드에서 받은 예약된 시간대:", reservedTimes); // 로그 출력 추가
       return reservedTimes.map((time) => new Date(time));
     } catch (error) {
       console.error("예약된 시간대 조회 중 오류 발생:", error);
       return [];
     }
   };
+
 
   const renderCalendar = () => {
     const start = startOfMonth(currentMonth);
@@ -243,30 +274,36 @@ const RentalSelection = () => {
       </S.CalendarGrid>
     );
   };
+
+ 
+
   const renderTimeButtons = () => {
-    if (!selectedStartDate || selectedEndDate) return null; // 날짜 범위 선택 시 시간 버튼 숨김
+    if (!selectedStartDate || selectedEndDate) return null;
 
     const today = startOfDay(new Date());
-    const tomorrow = addDays(today, 1); // 내일을 정의하여 예약 불가 날짜 설정에 사용
-    if (!showPrices || isBefore(selectedStartDate, tomorrow)) return null; // 내일 이전 날짜(오늘 포함)는 예약 불가
+    const tomorrow = addDays(today, 1);
+    if (!showPrices || isBefore(selectedStartDate, tomorrow)) return null;
 
     const timeButtons = [];
-    const price = Number(pricePerHour); // pricePerHour를 숫자로 변환
+    const price = Number(pricePerHour);
 
+    console.log("예약된 시간대:", reservedTimes); // 예약된 시간대 로그 출력
     for (let i = 8; i <= 22; i++) {
-      const time = setHours(setMinutes(new Date(selectedStartDate), 0), i);
+      const time = setHours(
+        setMinutes(startOfDay(new Date(selectedStartDate)), 0),
+        i
+      );
       const isReserved = reservedTimes.some(
         (t) =>
           t.getHours() === time.getHours() && t.getDate() === time.getDate()
-      ); // 예약된 시간대인지 확인
-      const isSelected = selectedTimes.some((t) => isSameHour(t, time)); // 선택된 시간대인지 확인
+      );
+      const isSelected = selectedTimes.some((t) => isSameHour(t, time));
       timeButtons.push(
         <S.TimeButton
           key={i}
           onClick={() => handleTimeClick(time)}
           selected={isSelected}
-          disabled={isReserved}
-          isReserved={isReserved} // 예약된 시간대는 회색으로 표시
+          isReserved={isReserved} // 스타일 적용을 위해 isReserved 설정
         >
           {`${format(time, "HH:mm")} ~ ${format(addHours(time, 1), "HH:mm")}`}
           <br />
@@ -276,6 +313,7 @@ const RentalSelection = () => {
     }
     return timeButtons;
   };
+
 
   const renderSelectedDates = () => {
     if (selectedStartDate && selectedEndDate) {

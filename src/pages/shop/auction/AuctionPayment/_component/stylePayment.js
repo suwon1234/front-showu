@@ -1,4 +1,3 @@
-// MD - 결제페이지 스타일
 import styled, { css } from 'styled-components'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -50,35 +49,35 @@ const flexStyle = css`
     width: 1165px;
     height: 45px;
     background-color: rgba(255, 212, 0, 0.8);
-    margin : 0 auto;
+    margin: 0 auto;
     /* justify-content: space-between; */
-  `
+  `;
 
   S.HeadItem = styled.div`
     flex: 1;
-    text-align: center;
+    text-align: left;
     color: #000;
     font-weight: bold;
-  `
+  `;
 
   S.Left = styled.div`
     display: flex;
-    flex: 3;
-    /* text-align: left; */
-    /* padding-left: 50px; */
-  `
+    flex: 2;
+    margin-left: 20px;
+    text-align: center;
+  `;
 
   S.Center = styled.div`
     display: flex;
     flex: 3;
     text-align: center;
-  `
+  `;
 
   S.Right = styled.div`
     display: flex;
     flex: 1;
     text-align: center;
-  `
+  `;
 
 
   S.PaymentList = styled.div`
@@ -140,15 +139,26 @@ const flexStyle = css`
 
   S.InputEmail = styled.div`
     // ${flexStyle}
-    // justify-content: space-between; 
+    // justify-content: space-between;
     // width: 1165px;
-      
-    .email-input{
-      width: 500px; 
-      height: 35px; 
+
+    .email-input {
+      width: 500px;
+      height: 35px;
       background-color: #000;
       border: 0.5px solid #fff;
-      border-radius: 5px; 
+      border-radius: 5px;
+      padding-left: 10px;
+      font-size: 15px;
+      ${inputHover}
+    }
+
+    .email-domain-input {
+      width: 500px;
+      height: 35px;
+      background-color: #000;
+      border: 0.5px solid #fff;
+      border-radius: 5px;
       padding-left: 10px;
       font-size: 15px;
       ${inputHover}
@@ -157,9 +167,9 @@ const flexStyle = css`
     & span {
       font-size: 18px;
       margin: 0 10px;
-      color: #fff; 
+      color: #fff;
     }
-  `
+  `;
 
   // S.PhoneWrapper = styled.div`
   //   flex-direction: column;
@@ -209,7 +219,18 @@ const flexStyle = css`
       ${inputHover}
     }
   `
-
+ S.InputMessage = styled.div`
+   & input {
+     width: 1055px;
+     height: 35px;
+     background-color: #000;
+     border: 0.5px solid #fff;
+     border-radius: 5px;
+     padding-left: 10px;
+     font-size: 15px;
+     ${inputHover}
+   }
+ `;
 
   S.Code = styled.div`
     display: flex;
@@ -235,20 +256,20 @@ const flexStyle = css`
 
   S.OrderInfoWrapper = styled.div`
     display: flex;
-    align-items: flex-end;
     justify-content: space-between;
   `
 
   S.OrderInfo = styled.div`
     ${flexStyle}
-    margin-top: 30px;
+    
+    margin-bottom: 50px;
 
     & p {
       font-size: 20px;
       margin-right: 20px;
       width: 120px;
     }
-  `
+  `;
 
   S.Price = styled.div`
     font-size: 20px;
@@ -392,13 +413,14 @@ const flexStyle = css`
     gap: 20px;
     width: 1165px;
     border-top: 0.5px solid #fff;
-  `
+  `;
 
   S.BackButton = styled.button`
     ${buttonStyles}
     background-color: #797979;
     color: #fff;
-  `
+    margin-top: 20px;
+  `;
 
   S.NextButton = styled.button`
     ${buttonStyles}
@@ -437,4 +459,22 @@ S.CloseButton = styled.button`
   font-size: 16px;
 `;
 
-  export default S;
+S.ReserveButton = styled.button`
+  border: none;
+  border-radius: 5px;
+  background-color: #ffd400;
+  color: black;
+  width: 250px;
+  height: 50px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${({ theme }) => theme.FONT_SIZE.h5};
+  font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+  margin-top: 20px;
+  margin-left: 30px;
+  cursor: pointer;
+`;
+
+export default S;

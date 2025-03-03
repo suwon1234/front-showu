@@ -64,7 +64,7 @@ const flexStyle = css`
   S.MdTitle = styled.div`
     display: flex;
     flex-direction: column; 
-    border-bottom: 0.5px solid white;
+    /* border-bottom: 0.5px solid white; */
     width: 505px;
     
     & p:first-child {
@@ -203,11 +203,21 @@ const flexStyle = css`
   S.QuantityControl = styled.div`
     ${flexStyle}
     justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
 
     & span {
       margin: 0 15px;
     }
   `
+
+  S.QuantityTitle = styled.div`
+    ${flexStyle}
+    justify-content: center;
+    margin-right: 350px;
+    font-size: ${({ theme }) => theme.FONT_SIZE.h4};
+    font-weight: ${({ theme }) => theme.FONT_WEIGHT.bold};
+  `;
 
   S.QuantityButton = styled.button`
     background-color: #000;

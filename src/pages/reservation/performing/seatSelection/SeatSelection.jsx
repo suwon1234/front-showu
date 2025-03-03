@@ -4,18 +4,18 @@ import { useSelector } from "react-redux";
 import format from "date-fns/format";
 import S from "./style";
 
+
 const SeatSelection = () => {
   const { state } = useLocation();
-  const { selectedDate, selectedTime, showId, showName, price } = state; // showName과 price를 함께 받아옴
-  const { currentUser } = useSelector((state) => state.user); // Redux에서 현재 유저 정보 가져옴
+  const { selectedDate, selectedTime, showId, showName, price } = state;
+  const { currentUser } = useSelector((state) => state.user);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [reservedSeats, setReservedSeats] = useState([]);
-  const [availableSeats, setAvailableSeats] = useState([]); // 잔여 좌석 상태 추가
+  const [availableSeats, setAvailableSeats] = useState([]);
   const seats = [];
 
   const navigate = useNavigate();
 
-  // 좌석 배열 생성
   for (let i = 0; i < 100; i++) {
     const row = Math.floor(i / 10) + 1;
     const col = (i % 10) + 1;
@@ -24,7 +24,7 @@ const SeatSelection = () => {
       row,
       col,
       type: seatType,
-      price: seatType === "S" ? price.S : price.R, // show에서 받아온 가격 사용
+      price: seatType === "S" ? price.S : price.R,
     });
   }
 
@@ -33,10 +33,7 @@ const SeatSelection = () => {
       try {
         const formattedDate = encodeURIComponent(
           new Date(selectedDate).toISOString()
-        ); // 날짜 형식 변환 후 URL 인코딩
-        console.log(
-          `Fetching reserved seats for showId=${showId}, date=${formattedDate}, time=${selectedTime}`
-        ); // 콘솔 로그 추가
+        );
         const response = await fetch(
           `http://localhost:8000/reservation/reservedSeats?showId=${showId}&date=${formattedDate}&time=${selectedTime}`
         );
@@ -44,7 +41,6 @@ const SeatSelection = () => {
           throw new Error("예약된 좌석을 가져오는 중 오류 발생");
         }
         const fetchedData = await response.json();
-        console.log("Fetched Reserved Seats:", fetchedData); // 콘솔 로그 추가
         setReservedSeats(fetchedData);
       } catch (error) {
         console.error("예약된 좌석을 가져오는 중 오류 발생:", error);
@@ -56,9 +52,6 @@ const SeatSelection = () => {
         const formattedDate = encodeURIComponent(
           new Date(selectedDate).toISOString()
         );
-        console.log(
-          `Fetching available seats for showId=${showId}, date=${formattedDate}, time=${selectedTime}`
-        );
         const response = await fetch(
           `http://localhost:8000/reservation/availableSeats?showId=${showId}&date=${formattedDate}&time=${selectedTime}`
         );
@@ -66,7 +59,6 @@ const SeatSelection = () => {
           throw new Error("잔여 좌석을 가져오는 중 오류 발생");
         }
         const fetchedData = await response.json();
-        console.log("Fetched Available Seats:", fetchedData);
         setAvailableSeats(fetchedData);
       } catch (error) {
         console.error("잔여 좌석을 가져오는 중 오류 발생:", error);
@@ -76,6 +68,7 @@ const SeatSelection = () => {
     fetchReservedSeats();
     fetchAvailableSeats();
   }, [showId, selectedDate, selectedTime]);
+
   const handleSeatClick = (seat) => {
     const seatId = `${seat.row}-${seat.col}`;
     if (
@@ -83,7 +76,7 @@ const SeatSelection = () => {
         reservedSeat.seatNumbers.includes(seatId)
       )
     )
-      return; // 예약된 좌석은 클릭 불가
+      return;
 
     if (
       selectedSeats.some(
@@ -98,7 +91,6 @@ const SeatSelection = () => {
         )
       );
     } else if (selectedSeats.length < 2) {
-      // 2매 초과 불가
       setSelectedSeats([...selectedSeats, seat]);
     }
   };
@@ -137,27 +129,23 @@ const SeatSelection = () => {
       }
 
       alert("좌석 예약이 완료되었습니다!");
-      navigate("/reservation/performing-show");
 
-      // 좌석 예약 후 잔여 좌석 다시 가져오기
-      const fetchReservedSeats = async () => {
-        const reservedSeatsResponse = await fetch(
-          `http://localhost:8000/reservation/reservedSeats?showId=${showId}&date=${formattedDate}&time=${selectedTime}`
-        );
-        const reservedSeatsData = await reservedSeatsResponse.json();
-        setReservedSeats(reservedSeatsData);
-      };
-
-      const fetchAvailableSeats = async () => {
-        const availableSeatsResponse = await fetch(
-          `http://localhost:8000/reservation/availableSeats?showId=${showId}&date=${formattedDate}&time=${selectedTime}`
-        );
-        const availableSeatsData = await availableSeatsResponse.json();
-        setAvailableSeats(availableSeatsData);
-      };
-
-      fetchReservedSeats();
-      fetchAvailableSeats();
+      navigate("/reservation/ticket-payment", {
+        state: {
+          productPrice: selectedSeats.reduce(
+            (total, seat) => total + parseInt(seat.price.replace(/,/g, ""), 10),
+            0
+          ),
+          orderName: `좌석 예약 - ${showName}`,
+          showId: showId,
+          date: formattedDate,
+          time: selectedTime,
+          seatNumbers: selectedSeats.map((seat) => `${seat.row}-${seat.col}`),
+          userId: currentUser._id,
+          customerName: currentUser.name,
+          customerEmail: currentUser.email,
+        },
+      });
     } catch (error) {
       console.error("좌석 예약 중 오류 발생:", error);
       alert(error.message); // 서버의 오류 메시지를 alert으로 표시
@@ -185,7 +173,6 @@ const SeatSelection = () => {
         </p>{" "}
         <br />
         <p style={{ color: "#ffd400" }}>1인당 최대 2매 예매 가능</p>
-        {/* 가격 정보 표시 */}
       </S.SelectedDateTimeInfo>
       <S.ContentWrapper>
         <S.SeatGrid>
@@ -210,12 +197,12 @@ const SeatSelection = () => {
                     selectedSeat.col === seat.col
                 )}
                 reserved={isReserved}
-                disabled={isReserved && !isCurrentUserReserved} // 예약된 좌석은 비활성화
+                disabled={isReserved && !isCurrentUserReserved}
                 type={seat.type}
                 style={{
                   backgroundColor: isReserved ? "gray" : "",
                   cursor: isReserved ? "not-allowed" : "pointer",
-                }} // 예약된 좌석 스타일
+                }}
               >
                 {seat.row}-{seat.col}
               </S.Seat>

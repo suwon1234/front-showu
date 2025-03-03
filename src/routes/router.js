@@ -57,7 +57,7 @@ import CommunityContainer from '../pages/community/main/CommunityContainer';
 import ReportsInfoContainer from '../pages/community/reports/ReportsInfoContainer';
 import MainContainer from '../pages/shop/md/MdMain/MainContainer';
 import CartContainer from '../pages/shop/md/MdCart/CartContainer';
-import PaymentContainer from '../pages/shop/md/MdPayment/PaymentContainer';
+// import PaymentContainer from '../pages/shop/md/MdPayment/PaymentContainer';
 import InquiryContainer from '../pages/shop/md/MdInquiry/InquiryContainer';
 import InquiryListContainer from '../pages/shop/md/MdInquiryList/InquiryListContainer';
 import MyGradeUpdateContainer from '../pages/mypage/myGrade/update/MyGradeUpdateContainer';
@@ -80,7 +80,7 @@ import MusicContainer from '../pages/vod/music/MusicContainer'
 import MyShowuContainer from '../pages/vod/showu/MyShowuContainer';
 import ShowuVideoConatiner from '../pages/vod/video/showuvideopage/ShowuVideoContainer';
 import ManagementContainer from '../pages/shop/auction/AuctionManagement/ManagementContainer';
-import PaymentContainer2 from '../pages/shop/auction/AuctionPayment/PaymentContainer2';
+// import PaymentContainer2 from '../pages/shop/auction/AuctionPayment/PaymentContainer2';
 import RefundContainer from '../pages/shop/md/MdRefund/RefundContainer';
 import RefundInfoContainer from '../pages/shop/md/MdRefundInfo/RefundInfoContainer';
 import StateContainer from '../pages/shop/auction/AuctionState/StateContainer';
@@ -95,9 +95,11 @@ import OpenDetail from '../pages/reservation/ticket/openDetail/OpenDetail';
 import SpaceRental from '../pages/reservation/space/spaceRental/SpaceRental';
 import RentalDetail from '../pages/reservation/space/rentaldetail/RentalDetail';
 import RentalSelection from '../pages/reservation/space/rentalSelection/RentalSelection';
-import Detail from '../pages/reservation/payment/Detail';
-import Failed from '../pages/reservation/payment/Failed';
-import Success from '../pages/reservation/payment/Success';
+// import Detail from '../pages/reservation/payment/Detail';
+// import Failed from '../pages/reservation/payment/Failed';
+// import Success from '../pages/reservation/payment/Success';
+import Failed from "../pages/reservation/payment/tossPayment/Failed";
+import Success from "../pages/reservation/payment/tossPayment/Success";
 import AdminUpgradContainer from '../pages/admin/AdminUpgradContainer';
 import TeamContainer from '../pages/showu/team/TeamContainer';
 import TeamDetailContainer from '../pages/showu/team/teamDetail/TeamDetailContainer';
@@ -110,6 +112,22 @@ import WriteUpdateContainer from '../pages/community/writingEdit/WriteUpdateCont
 import ReportEditContainer from '../pages/community/reportEdit/ReportEditContainer';
 import AdminTeamContainer from '../pages/admin/AdminTeamContainer';
 
+import TicketPaymentDetail from "../pages/reservation/payment/ticketPayment/TicketPaymentDetail";
+import TossPaymentContianer from "../pages/reservation/payment/tossPayment/TossPaymentContianer";
+import RentalPaymentDetail from "../pages/reservation/spacePayment/rentalPayment/RentalPaymentDetail";
+import RentalTossPaymentContainer from "../pages/reservation/spacePayment/rentalTossPayment/RentalTossPaymentContainer";
+import RentalSuccess from "../pages/reservation/spacePayment/rentalTossPayment/RentalSuccess";
+import RentalFailed from "../pages/reservation/spacePayment/rentalTossPayment/RentalFailed";
+import MdPaymentDetail from "../pages/shop/md/MdPayment/payment/mdPayment/MdPaymentDetail";
+import MdPaymentContainer from "../pages/shop/md/MdPayment/_component/MdPaymentContainer";
+import MdTossPaymentContainer from "../pages/shop/md/MdPayment/payment/mdTossPayment/MdTossPaymentContainer";
+import MdSuccess from "../pages/shop/md/MdPayment/payment/mdTossPayment/MdSuccess";
+import MdFailed from "../pages/shop/md/MdPayment/payment/mdTossPayment/MdFailed";
+import AuctionPaymentContainer from "../pages/shop/auction/AuctionPayment/_component/AuctionPaymentContainer";
+import AuctionPaymentDetail from "../pages/shop/auction/AuctionPayment/payment/auctionPayment/AuctionPaymentDetail";
+import AuctionTossPaymentContainer from "../pages/shop/auction/AuctionPayment/payment/auctionTossPayment/AuctionTossPaymentContainer";
+import AuctionSuccess from "../pages/shop/auction/AuctionPayment/payment/auctionTossPayment/AuctionSuccess";
+import AuctionFailed from "../pages/shop/auction/AuctionPayment/payment/auctionTossPayment/AuctionFailed";
 
 const router = createBrowserRouter([
   {
@@ -354,8 +372,24 @@ const router = createBrowserRouter([
       },
       {
         path: "/shop/md/payment",
-        element: <PaymentContainer />, // MD 주문/결제
+        element: <MdPaymentContainer />, // 수정
       },
+      {
+        path: "/shop/md/payment/toss",
+        element: <MdPaymentDetail />, // 수정
+      },
+      {
+        path: "/shop/md/payment/toss-payment", // 토스 페이 결제 경로 - 수정
+        element: <MdTossPaymentContainer />,
+        children: [
+          { path: "success", element: <MdSuccess /> },
+          { path: "failed", element: <MdFailed /> },
+        ],
+      },
+      // {
+      //   path: "/shop/md/payment",
+      //   element: <PaymentContainer />, // MD 주문/결제
+      // },
       {
         path: "/shop/md/payment/info",
         element: <PayInfoContainer />, // MD 주문 정보
@@ -402,7 +436,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/shop/auction/payment",
-        element: <PaymentContainer2 />, // 경매 입찰
+        element: <AuctionPaymentContainer />, // 경매 입찰 - 수정
+      },
+      {
+        path: "/shop/auction/payment/toss", // 수정
+        element: <AuctionPaymentDetail />,
+      },
+      {
+        path: "/shop/auction/payment/toss-payment", // 수정
+        element: <AuctionTossPaymentContainer />,
+        children: [
+          { path: "success", element: <AuctionSuccess /> },
+          { path: "failed", element: <AuctionFailed /> },
+        ],
       },
       {
         path: "/shop/auction/management",
@@ -529,12 +575,27 @@ const router = createBrowserRouter([
         element: <RentalSelection />,
       },
       {
-        path: "/reservation/payment", // 토스 페이 api
-        element: <PaymentContainer />,
+        path: "/reservation/ticket-payment", // ticketPaymentDetail 경로 추가 - 수정
+        element: <TicketPaymentDetail />,
+      },
+      {
+        path: "/reservation/space-payment", // RentalPaymentDetail 경로 추가 - 수정
+        element: <RentalPaymentDetail />,
+      },
+      {
+        path: "/reservation/toss-payment", // 토스 페이 api - 수정
+        element: <TossPaymentContianer />,
         children: [
-          { index: true, element: <Detail /> },
           { path: "success", element: <Success /> },
           { path: "failed", element: <Failed /> },
+        ],
+      },
+      {
+        path: "/reservation/rental-toss-payment", // 토스 페이 api - 수정
+        element: <RentalTossPaymentContainer />,
+        children: [
+          { path: "rental-success", element: <RentalSuccess /> },
+          { path: "rental-failed", element: <RentalFailed /> },
         ],
       },
     ],
