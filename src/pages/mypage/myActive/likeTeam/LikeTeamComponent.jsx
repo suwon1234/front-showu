@@ -1,11 +1,27 @@
 import React from 'react';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDays, faHeart, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Paging from '../../_component/Paging';
 import S from './LikeTeamStyle';
 import { Link } from 'react-router-dom';
 
-const LikeTeamComponent = ({ page, currentList, setPage, totalPost, PAGINATION }) => {
+const LikeTeamComponent = ({ page, currentList, setPage, totalPost, PAGINATION, navigate }) => {
+
+  //마감 공고일 d-day 함수
+  function calculateDDay(deadLine) {
+    const today = new Date();
+    const endDate = new Date(deadLine);
+    const diffTime = endDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    if(diffDays > 0){
+      return `D-${diffDays}`
+    } else if (diffDays === 0){
+      return "D-Day"
+    } else {
+      return "마감된 공고"
+    }
+  }
 
   if (currentList.length === 0) {
     return (
@@ -21,35 +37,60 @@ const LikeTeamComponent = ({ page, currentList, setPage, totalPost, PAGINATION }
 
   return (
     <>
-      <S.Container>
-      <S.Wrapper>
-        
-        { currentList && currentList.map((item, i) => (
-          <S.OuterBox key={i} >
-          <S.Box>
-            <img src={item.teamThumbnail} alt="팀매칭 이미지" />
-            <FontAwesomeIcon icon={faHeart} className='heart'/>
-            <div>
-              <S.Right>
-                <p className='genre'>{item.category}</p>
-                <p className='intro'>{item.teamNotice}</p>
-                <p className='name'>{item.teamName}</p>
-                {/* <p className='date'>{item.period}</p> */}
-              </S.Right>
-            </div>
-          </S.Box>
-        </S.OuterBox>
-        ))}
-        <Paging 
-          page={page}
-          setPage={setPage}
-          totalPost={totalPost}
-          btnRange={PAGINATION.btnRange}
-          pageRange={PAGINATION.pageRange}
-        />  
+      <S.LessonWrapper>
+          {currentList && currentList.map((team, i) => (
+            <S.LessonBox key={i}>
+              <ul>
+                <S.UserInfo>  
+                  <img src={`http://localhost:8000${team.teamProfile}`} alt="team profile"></img>
+                  <div>
+                    <li className='teamName'>{team.teamName}</li>
+                    <li className='category'>{team.category}</li>
+                  </div>
+                </S.UserInfo>
 
-      </S.Wrapper>
-    </S.Container>
+                <S.Hr />
+
+                <S.category>
+                  {/* <li className='total'>{team.userName.role}</li> */}
+                  <li className='category'>{team.category}</li>
+                </S.category>
+
+                <S.LessonExplantion>
+                  <li className='lessonDetail'
+                    onClick={() => navigate(`/showu/team/detail/${team._id}`)}
+                  >{team.teamIntro}</li>
+
+                  {/* <div>
+                    <p>{calculateDDay(team.deadLine)}</p>
+                  </div> */}
+
+                  <S.Career>
+                    <FontAwesomeIcon icon={faThumbtack} />
+                    <li className='lessonName'>{team.careerHistory}</li>
+                  </S.Career>
+
+                </S.LessonExplantion>
+
+                <S.Period>
+                  <FontAwesomeIcon icon={faCalendarDays} />
+                  <li>{team.deadLine}</li>
+                </S.Period>
+              </ul>
+            </S.LessonBox>
+          ))}
+        </S.LessonWrapper>
+
+        <br />
+        <br />
+
+      <Paging 
+        page={page}
+        setPage={setPage}
+        totalPost={totalPost}
+        btnRange={PAGINATION.btnRange}
+        pageRange={PAGINATION.pageRange}
+      />  
     </>
   );
 };

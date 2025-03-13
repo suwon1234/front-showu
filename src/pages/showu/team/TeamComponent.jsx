@@ -1,7 +1,7 @@
 import React from 'react';
 import S from './style';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDays, faChevronDown, faThumbtack } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDays, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import Paging from '../../mypage/_component/Paging';
 
 const TeamComponent = ({ navigate, filteredProducts, page, setPage, totalPost, PAGINATION }) => {
@@ -49,7 +49,6 @@ const TeamComponent = ({ navigate, filteredProducts, page, setPage, totalPost, P
                   >{team.teamIntro}</li>
 
                   <div>
-                    {/* <span>{team.deadLine}</span> */}
                     <p>{calculateDDay(team.deadLine)}</p>
                   </div>
 
@@ -68,6 +67,9 @@ const TeamComponent = ({ navigate, filteredProducts, page, setPage, totalPost, P
             </S.LessonBox>
           ))}
         </S.LessonWrapper>
+
+        <br />
+        <br />
 
         <Paging 
           page={page}

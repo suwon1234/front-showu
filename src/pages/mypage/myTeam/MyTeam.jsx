@@ -48,7 +48,7 @@ const MyTeam = () => {
         setCompletedTeams(data.completedTeams);
         setWaitingTeams(data.waitingTeams);
       } else {
-        console.log(data.message);
+        // console.log(data.message);
       }
     } catch (error) {
       console.error("MyTeamDetailError", error);
