@@ -2,7 +2,7 @@ import React from 'react';
 import S from './PayStyle';
 
 
-const PayComponent = ({ currentList }) => {
+const PayComponent = ({ currentList, handleNavigate }) => {
 
   return (
     <div>
@@ -22,10 +22,10 @@ const PayComponent = ({ currentList }) => {
             <React.Fragment key={i}>
               <S.ContentTr>
                 {/* <th scope="row">{item.id}</th> */}
-                <th scope="row">{item.paymentAt}</th>
+                <th scope="row">{item.createdAt}</th>
                 {/* <td>{item.paymentAt}</td> */}
                 <td>{
-                  (item.type === "MD" ? item.productName.mdName : item.productName.auctionName)
+                  (item.type === "MD" ? item.orderName : item.orderName)
                 }</td>
                 <td>{item.totalAmount}</td>
                 <td>{item.type}</td>
@@ -35,14 +35,15 @@ const PayComponent = ({ currentList }) => {
               <tr>
                 <td colSpan="6">
                   <S.Image>
-                    {/* {item.image?.map((imgSrc, imgIndex) => ( */}
                       <img
-                        // key={`${item.id}-${imgIndex}`}
-                        // onClick={() => handleNavigate('/shop/md/detail/:id')}
-                        src={item.productName.image}
+                        onClick={() => handleNavigate(
+                          item.type === "MD" ? 
+                          `/shop/md/detail/${item.productId._id}` : 
+                          `/shop/auction/detail/${item.productId._id}`
+                          )}
+                        src={item.productId.image}
                         alt={`상품 이미지`}
                       />
-                    {/* ))} */}
                   </S.Image>
                 </td>
               </tr>

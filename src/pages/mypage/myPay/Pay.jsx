@@ -33,8 +33,8 @@ const Pay = () => {
             console.log(res.message)
           }
           setPayData(res.allPaymentList)
-          console.log(res.allPaymentList)
-          console.log(res.message)
+          // console.log(res.allPaymentList)
+          // console.log(res.message)
         })
       } catch (error) {
         console.log("PayError", error);
@@ -53,7 +53,8 @@ const Pay = () => {
   return (
     <div>
       <PayComponent 
-        currentList={currentList} 
+        currentList={currentList}
+        handleNavigate={handleNavigate} 
       />
       <Paging 
           page={page}
