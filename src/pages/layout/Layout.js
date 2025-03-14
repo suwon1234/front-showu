@@ -137,7 +137,7 @@ const Layout = () => {
             <S.menubar className="menubar">
               {/* showU  */}
               <NavLink to={"/showu/team"} className="menuitem">
-                showU
+                Team
               </NavLink>
 
               {/* Shop */}
