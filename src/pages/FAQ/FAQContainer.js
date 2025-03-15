@@ -79,11 +79,11 @@ const FAQContainer = () => {
           <p>자주 묻는 질문(FAQ)</p>
         </S.Title>
         <S.Ul>
-          <li>
+          {/* <li>
             <FAQ1
               faqDatas={faqDatas}
             />
-          </li>
+          </li> */}
           <li>
             <FAQ2
               faqDatas={faqDatas}
