@@ -10,7 +10,7 @@ const S = {};
 
   S.Wapper = styled.div`
     width: 100%;
-    height: 800px;
+    height: 300px;
   `
 
   S.Title = styled.div`
@@ -47,7 +47,7 @@ const S = {};
         }
       }
 
-      & li:nth-child(4) {
+      & li:nth-child(3) {
         padding-bottom: 3px;
         border-bottom: 3px solid #ffd400;
         color: #fff;

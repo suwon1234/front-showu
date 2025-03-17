@@ -4,7 +4,7 @@ const S = {};
 
   S.Container = styled.div`
     width: 100%;
-    height: 800px;
+    height: 1300px;
     margin: 130px 0;
   `
 

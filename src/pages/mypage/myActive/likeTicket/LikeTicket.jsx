@@ -37,10 +37,10 @@ const LikeTicket = () => {
         .then((res) => res.json())
         .then((res) => {
           if(!res.spaecSuccess){
-            console.log(res.message)
+            // console.log(res.message)
           }
           setTicket(res.likeTicket)
-          console.log(res.message)
+          // console.log(res.message)
         })
      } catch (error) {
       console.log("LikeTicketError", error)

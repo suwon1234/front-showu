@@ -30,7 +30,7 @@ const S = {};
 
     display: flex;
     flex-wrap: wrap;
-    column-gap: 40px;
+    gap: 40px;
   `
 
   S.OuterBox = styled.div`

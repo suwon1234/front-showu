@@ -24,7 +24,7 @@ const MyVodComponent = ({ page, currentList, setPage, totalPost, PAGINATION }) =
         { currentList && currentList.map((item, i) => (
           <S.Wrapper key={i} className='Wrapper'>
             <S.Image className='Image'>
-              <img src={item.themnail} alt="vod 포스터" />
+              <img src={`http://localhost:8000${item.themnail}`} alt="vod 포스터" />
             </S.Image>
             <S.Content className='content'>
               <p>{item.title}</p>

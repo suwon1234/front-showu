@@ -4,7 +4,7 @@ const S = {};
 
   S.Container = styled.div`
     width: 100%;
-    height: 800px;
+    height: 900px;
     margin: 130px 0;
   `
 
@@ -47,7 +47,7 @@ const S = {};
         }
       }
 
-      & li:nth-child(5) {
+      & li:nth-child(4) {
         padding-bottom: 3px;
         border-bottom: 3px solid #ffd400;
         color: #fff;

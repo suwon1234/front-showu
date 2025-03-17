@@ -26,7 +26,7 @@ const PostComponent = ({ page, currentList, setPage, totalPost, PAGINATION }) =>
           key={item._id} 
           onClick={() => navigate(`/community/communityInfo/${item._id}`)}>
           <S.Wrap className='wrap'>
-            <img src={item.imageUrl} alt='post 이미지' />
+            <img src={`http://localhost:8000/${item.imageUrl}`} alt='post 이미지' />
             <S.Right className='right'>
               <p className='title'>{item.title}</p>
               <p className='content'>{item.content}</p>

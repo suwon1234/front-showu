@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import LikeTeamComponent from './LikeTeamComponent.jsx';
 import usePagination from '../../../../hooks/usePagination.js';
+import { useNavigate } from 'react-router-dom';
 
 const PAGINATION = {
   pageRange: 4,
@@ -10,6 +11,7 @@ const PAGINATION = {
 const LikeMyTeams = () => {
   const [ teams, setTeams ] = useState([]);
   const jwtToken = localStorage.getItem("jwtToken");
+  const navigate = useNavigate();
 
   const { page, currentList, setPage, totalPost } = usePagination({
     pageRange: PAGINATION.pageRange,
@@ -49,6 +51,7 @@ const LikeMyTeams = () => {
         currentList={currentList} 
         totalPost={totalPost}
         PAGINATION={PAGINATION}
+        navigate={navigate}
       />
     </>
   );

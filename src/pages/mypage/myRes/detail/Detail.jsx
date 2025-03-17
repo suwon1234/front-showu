@@ -137,7 +137,7 @@ const Detail = () => {
                 <th scope='row' className='num'>{ticket.id}</th>
                 <td>{ticket.seatNumbers.map((seatNumbers) => (seatNumbers)).join(", ")}</td>
                 {/* <td>L열 20번</td> */}
-                <td>{ticket.price.R}</td>
+                <td>{ticket.amount}원</td>
                 {/* <td>{ticket.cancellationStatus}</td>
                 <td>{ticket.cancellableDate}</td> */}
               </S.DetailTr>

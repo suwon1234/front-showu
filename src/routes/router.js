@@ -128,6 +128,7 @@ import AuctionPaymentDetail from "../pages/shop/auction/AuctionPayment/payment/a
 import AuctionTossPaymentContainer from "../pages/shop/auction/AuctionPayment/payment/auctionTossPayment/AuctionTossPaymentContainer";
 import AuctionSuccess from "../pages/shop/auction/AuctionPayment/payment/auctionTossPayment/AuctionSuccess";
 import AuctionFailed from "../pages/shop/auction/AuctionPayment/payment/auctionTossPayment/AuctionFailed";
+import TeamApplyContainer from '../pages/showu/team/teamApply/TeamApplyContainer';
 
 const router = createBrowserRouter([
   {
@@ -476,7 +477,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/showu/team/apply/:id",
-        element: <MyTeamApplyContainer />, //team 지원 페이지
+        element: <TeamApplyContainer />, //team 지원 페이지
       },
       {
         path: "/showu/team/apply/up-date/:id",
