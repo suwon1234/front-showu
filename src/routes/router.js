@@ -129,6 +129,7 @@ import AuctionTossPaymentContainer from "../pages/shop/auction/AuctionPayment/pa
 import AuctionSuccess from "../pages/shop/auction/AuctionPayment/payment/auctionTossPayment/AuctionSuccess";
 import AuctionFailed from "../pages/shop/auction/AuctionPayment/payment/auctionTossPayment/AuctionFailed";
 import TeamApplyContainer from '../pages/showu/team/teamApply/TeamApplyContainer';
+import SearchContainer from '../pages/search/SearchContainer'
 
 const router = createBrowserRouter([
   {
@@ -482,6 +483,10 @@ const router = createBrowserRouter([
       {
         path: "/showu/team/apply/up-date/:id",
         element: <TeamApplyUpdateContainer />, //team 지원 페이지
+      },
+      {
+        path : "/search",
+        element : <SearchContainer/>
       },
       {
         path: "/vod",
